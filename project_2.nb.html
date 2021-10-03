@@ -215,21 +215,34 @@ pre code {
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzXG5saWJyYXJ5KGd1dGVuYmVyZ3IpXG5saWJyYXJ5KHRpZHl0ZXh0KVxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmBgYCJ9 -->
+<pre class="r"><code>#loading all the necessary libraries
+library(gutenbergr)
+library(tidytext)
+library(tidyverse)
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Cmd+Option+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0emdlcmFsZF90ZXh0IDwtIGd1dGVuYmVyZ193b3JrcyhhdXRob3IgPT0gXCJGaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dClcIilcbmBgYCJ9 -->
+<pre class="r"><code>fitzgerald_text &lt;- gutenberg_works(author == &quot;Fitzgerald, F. Scott (Francis Scott)&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2Rvd25sb2FkaW5nIGFsbCB0aGUgdGV4dHMgZm91bmRcbmZpdHpnZXJhbGRfZG93bmxvYWQgPC0gZml0emdlcmFsZF90ZXh0ICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICBndXRlbmJlcmdfZG93bmxvYWQobWV0YV9maWVsZHMgPSBjKFwidGl0bGVcIiwgXCJhdXRob3JcIikpXG5gYGAifQ== -->
+<pre class="r"><code>#downloading all the texts found
+fitzgerald_download &lt;- fitzgerald_text %&gt;% 
+                      gutenberg_download(meta_fields = c(&quot;title&quot;, &quot;author&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamVjdCAyIgphdXRob3JzOiAiTmF2ZGVlcCBTaW5naCwgU2hyZXlhIEtob2JyYWdhZGUsIFNhbXJpZGhpIEhvb2RhIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiAKClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDbWQrU2hpZnQrRW50ZXIqLiAKCmBgYHtyfQpwbG90KGNhcnMpCmBgYAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkNtZCtPcHRpb24rSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkNtZCtTaGlmdCtLKiB0byBwcmV2aWV3IHRoZSBIVE1MIGZpbGUpLiAKClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4KCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamVjdCAyIgphdXRob3JzOiAiTmF2ZGVlcCBTaW5naCwgU2hyZXlhIEtob2JyYWdhZGUsIFNhbXJpZGhpIEhvb2RhIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7ciBsb2FkX2xpYnJhcmllc30KI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzCmxpYnJhcnkoZ3V0ZW5iZXJncikKbGlicmFyeSh0aWR5dGV4dCkKbGlicmFyeSh0aWR5dmVyc2UpCgpgYGAKCmBgYHtyIGd1dGVuYmVyZ19maXR6Z2VyYWxkX3dvcmtzfQojZmluZGluZyB0ZXh0cyBieSBGaXR6Z2VyYWxkIG9uIGd1dGVuYmVyZwpmaXR6Z2VyYWxkX3RleHQgPC0gZ3V0ZW5iZXJnX3dvcmtzKGF1dGhvciA9PSAiRml0emdlcmFsZCwgRi4gU2NvdHQgKEZyYW5jaXMgU2NvdHQpIikKYGBgCgpgYGB7ciBndXRlbmJlcmdfZml0emdlcmFsZF9kb3dubG9hZH0KI2Rvd25sb2FkaW5nIGFsbCB0aGUgdGV4dHMgZm91bmQKZml0emdlcmFsZF9kb3dubG9hZCA8LSBmaXR6Z2VyYWxkX3RleHQgJT4lIAogICAgICAgICAgICAgICAgICAgICAgZ3V0ZW5iZXJnX2Rvd25sb2FkKG1ldGFfZmllbGRzID0gYygidGl0bGUiLCAiYXV0aG9yIikpCmBgYA==</div>
 
 
 
