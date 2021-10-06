@@ -1,0 +1,12 @@
+```{r import_Hemingway_bulk}
+#DO NOT RUN
+file_list <- list.files(path = ".", recursive = FALSE, pattern = "*Ernest.txt$", full.names = FALSE)
+
+Hemingway_files <- vroom(file_list, delim = ".", col_names = FALSE)
+```
+
+```{r hemingway_corpus}
+#DO NOT RUN
+DATA_DIR <- "."
+hemingway_corpus <- readtext("A Farewell to Arms_Hemingway, Ernest.txt", docvarsfrom = "filenames", docvarnames = c("title", "author"), devsep = "_")
+```

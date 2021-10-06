@@ -9,7 +9,6 @@ output: html_notebook
 library(gutenbergr)
 library(tidytext)
 library(tidyverse)
-library(vroom)
 library(readtext)
 ```
 
@@ -29,23 +28,77 @@ fitzgerald_download <- fitzgerald_text %>%
 The_Sun_Also_Rises_Hemingway_Ernest <- read_delim("The Sun Also Rises_Hemingway, Ernest.txt", 
     delim = "\t", quote = "\\\"", escape_double = FALSE, 
     trim_ws = TRUE)
+The_Sun_Also_Rises_Hemingway_Ernest <- The_Sun_Also_Rises_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "The Sun Also Rises", .before = text)
+
 The_Old_Man_and_the_Sea_Hemingway_Ernest <- read_delim("The Old Man and the Sea_Hemingway, Ernest.txt", 
     delim = ".", quote = "\\\"", escape_double = FALSE)
+The_Old_Man_and_the_Sea_Hemingway_Ernest <- The_Old_Man_and_the_Sea_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "The Old Man and the Sea", .before = text)
+
 For_Whom_the_Bell_Tolls_Hemingway_Ernest <- read_delim("For Whom the Bell Tolls_Hemingway, Ernest.txt", 
     delim = ".", quote = "\\\"", escape_double = FALSE)
+For_Whom_the_Bell_Tolls_Hemingway_Ernest <- For_Whom_the_Bell_Tolls_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "For Whom The Bell Tolls", .before = text)
+
 A_Farewell_to_Arms_Hemingway_Ernest <- read_delim("A Farewell to Arms_Hemingway, Ernest.txt", 
     delim = ".", quote = "\\\"", escape_double = FALSE)
+A_Farewell_to_Arms_Hemingway_Ernest <- A_Farewell_to_Arms_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "A Farewell to Arms", .before = text)
+
+hemingway_corpus <- bind_rows(The_Sun_Also_Rises_Hemingway_Ernest,The_Old_Man_and_the_Sea_Hemingway_Ernest,For_Whom_the_Bell_Tolls_Hemingway_Ernest,A_Farewell_to_Arms_Hemingway_Ernest)
 ```
 
-```{r import_Hemingway_bulk}
-#DO NOT RUN
-file_list <- list.files(path = ".", recursive = FALSE, pattern = "*Ernest.txt$", full.names = FALSE)
-
-Hemingway_files <- vroom(file_list, delim = ".", col_names = FALSE)
+```{r tidy_hemingway}
+#breaking up texts into words
+tidy_hemingway <- hemingway_corpus %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 ```
 
-```{r hemingway_corpus}
-#DO NOT RUN
-DATA_DIR <- "."
-hemingway_corpus <- readtext("A Farewell to Arms_Hemingway, Ernest.txt", docvarsfrom = "filenames", docvarnames = c("title", "author"), devsep = "_")
+```{r tidy_fitzgerald}
+#breaking up texts into words
+tidy_fitzgerald <- fitzgerald_download %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 ```
+
+```{r adding_female_words}
+#collection of words representing a female
+female_words <- c("she", "her", "woman", "girl", "aunt", "mother", "sister", "wife", "lady")
+
+female_df <- tibble(word = female_words, female = TRUE)
+```
+
+```{r hemingway_tagged}
+hemingway_tagged <- tidy_hemingway %>% left_join(female_df)
+```
+
+```{r fitzgerald_tagged}
+fitzgerald_tagged <- tidy_fitzgerald %>% left_join(female_df)
+```
+
+```{r fitzgerald_count}
+#counting how often female words appeared
+#table shows each text and the respective percentage
+fitzgerald_table <- fitzgerald_tagged %>% group_by(title) %>% count(female) %>% mutate(percent = n/sum(n)*100)
+
+```
+
+```{r hemingway_count}
+#counting how often female words appeared
+#table shows each text and the respective percentage
+hemingway_table <- hemingway_tagged %>% group_by(title) %>% count(female) %>% mutate(percent = n/sum(n)*100)
+
+```
+
+```{r combined_result}
+#table showing two authors and their respective usage of female words
+author_table <- bind_rows(fitzgerald_tagged, hemingway_tagged)
+author_table <- author_table %>% group_by(author) %>% count(female) %>% mutate(percent = n/sum(n)*100) %>% drop_na(female)
+
+#table showing all texts and their respective usage of female words
+combined_table <- bind_rows(hemingway_table, fitzgerald_table) %>% drop_na(female)
+```
+```{r frequency_distribution}
+hemingway_wordcount <- tidy_hemingway %>% count(word, sort = TRUE) %>% mutate(frequency = (n/sum(n)), .after = n)
+fitzgerald_wordcount <- tidy_fitzgerald %>% count(word, sort = TRUE) %>% mutate(frequency = (n/sum(n)), .after = n)
+
+```
+
+```{r exporting_tables}
+save(author_table, file = "saved_data.rda")
+```
+

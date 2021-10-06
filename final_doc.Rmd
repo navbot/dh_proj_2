@@ -1,0 +1,14 @@
+---
+title: "Digital Humanities - Ashoka University"
+output: html_document
+---
+### Project 2
+#### Team members: Navdeep Singh, Shreya Khobragade, Samridhi Hooda
+```{r load_data_libraries, include=FALSE}
+load("saved_data.rda")
+library(knitr)
+```
+```{r echo = FALSE, results = 'asis'}
+kable(author_table, caption = "Representation of females in the two authors:")
+
+```
