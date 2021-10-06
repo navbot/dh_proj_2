@@ -217,19 +217,21 @@ pre code {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzXG5saWJyYXJ5KGd1dGVuYmVyZ3IpXG5saWJyYXJ5KHRpZHl0ZXh0KVxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzXG5saWJyYXJ5KGd1dGVuYmVyZ3IpXG5saWJyYXJ5KHRpZHl0ZXh0KVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHZyb29tKVxubGlicmFyeShyZWFkdGV4dClcbmBgYCJ9 -->
 <pre class="r"><code>#loading all the necessary libraries
 library(gutenbergr)
 library(tidytext)
 library(tidyverse)
-</code></pre>
+library(vroom)
+library(readtext)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0emdlcmFsZF90ZXh0IDwtIGd1dGVuYmVyZ193b3JrcyhhdXRob3IgPT0gXCJGaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dClcIilcbmBgYCJ9 -->
-<pre class="r"><code>fitzgerald_text &lt;- gutenberg_works(author == &quot;Fitzgerald, F. Scott (Francis Scott)&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2ZpbmRpbmcgdGV4dHMgYnkgRml0emdlcmFsZCBvbiBndXRlbmJlcmdcbmZpdHpnZXJhbGRfdGV4dCA8LSBndXRlbmJlcmdfd29ya3MoYXV0aG9yID09IFwiRml0emdlcmFsZCwgRi4gU2NvdHQgKEZyYW5jaXMgU2NvdHQpXCIpXG5gYGAifQ== -->
+<pre class="r"><code>#finding texts by Fitzgerald on gutenberg
+fitzgerald_text &lt;- gutenberg_works(author == &quot;Fitzgerald, F. Scott (Francis Scott)&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -241,8 +243,43 @@ fitzgerald_download &lt;- fitzgerald_text %&gt;%
                       gutenberg_download(meta_fields = c(&quot;title&quot;, &quot;author&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5UaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKFwiVGhlIFN1biBBbHNvIFJpc2VzX0hlbWluZ3dheSwgRXJuZXN0LnR4dFwiLCBcbiAgICBkZWxpbSA9IFwiXFx0XCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UsIFxuICAgIHRyaW1fd3MgPSBUUlVFKVxuVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKFwiVGhlIE9sZCBNYW4gYW5kIHRoZSBTZWFfSGVtaW5nd2F5LCBFcm5lc3QudHh0XCIsIFxuICAgIGRlbGltID0gXCIuXCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpXG5Gb3JfV2hvbV90aGVfQmVsbF9Ub2xsc19IZW1pbmd3YXlfRXJuZXN0IDwtIHJlYWRfZGVsaW0oXCJGb3IgV2hvbSB0aGUgQmVsbCBUb2xsc19IZW1pbmd3YXksIEVybmVzdC50eHRcIiwgXG4gICAgZGVsaW0gPSBcIi5cIiwgcXVvdGUgPSBcIlxcXFxcXFwiXCIsIGVzY2FwZV9kb3VibGUgPSBGQUxTRSlcbkFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0IDwtIHJlYWRfZGVsaW0oXCJBIEZhcmV3ZWxsIHRvIEFybXNfSGVtaW5nd2F5LCBFcm5lc3QudHh0XCIsIFxuICAgIGRlbGltID0gXCIuXCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpXG5gYGAifQ== -->
+<pre class="r"><code>
+The_Sun_Also_Rises_Hemingway_Ernest &lt;- read_delim(&quot;The Sun Also Rises_Hemingway, Ernest.txt&quot;, 
+    delim = &quot;\t&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE, 
+    trim_ws = TRUE)
+The_Old_Man_and_the_Sea_Hemingway_Ernest &lt;- read_delim(&quot;The Old Man and the Sea_Hemingway, Ernest.txt&quot;, 
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)
+For_Whom_the_Bell_Tolls_Hemingway_Ernest &lt;- read_delim(&quot;For Whom the Bell Tolls_Hemingway, Ernest.txt&quot;, 
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)
+A_Farewell_to_Arms_Hemingway_Ernest &lt;- read_delim(&quot;A Farewell to Arms_Hemingway, Ernest.txt&quot;, 
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0RPIE5PVCBSVU5cbmZpbGVfbGlzdCA8LSBsaXN0LmZpbGVzKHBhdGggPSBcIi5cIiwgcmVjdXJzaXZlID0gRkFMU0UsIHBhdHRlcm4gPSBcIipFcm5lc3QudHh0JFwiLCBmdWxsLm5hbWVzID0gRkFMU0UpXG5cbkhlbWluZ3dheV9maWxlcyA8LSB2cm9vbShmaWxlX2xpc3QsIGRlbGltID0gXCIuXCIsIGNvbF9uYW1lcyA9IEZBTFNFKVxuYGBgIn0= -->
+<pre class="r"><code>#DO NOT RUN
+file_list &lt;- list.files(path = &quot;.&quot;, recursive = FALSE, pattern = &quot;*Ernest.txt$&quot;, full.names = FALSE)
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamVjdCAyIgphdXRob3JzOiAiTmF2ZGVlcCBTaW5naCwgU2hyZXlhIEtob2JyYWdhZGUsIFNhbXJpZGhpIEhvb2RhIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7ciBsb2FkX2xpYnJhcmllc30KI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzCmxpYnJhcnkoZ3V0ZW5iZXJncikKbGlicmFyeSh0aWR5dGV4dCkKbGlicmFyeSh0aWR5dmVyc2UpCgpgYGAKCmBgYHtyIGd1dGVuYmVyZ19maXR6Z2VyYWxkX3dvcmtzfQojZmluZGluZyB0ZXh0cyBieSBGaXR6Z2VyYWxkIG9uIGd1dGVuYmVyZwpmaXR6Z2VyYWxkX3RleHQgPC0gZ3V0ZW5iZXJnX3dvcmtzKGF1dGhvciA9PSAiRml0emdlcmFsZCwgRi4gU2NvdHQgKEZyYW5jaXMgU2NvdHQpIikKYGBgCgpgYGB7ciBndXRlbmJlcmdfZml0emdlcmFsZF9kb3dubG9hZH0KI2Rvd25sb2FkaW5nIGFsbCB0aGUgdGV4dHMgZm91bmQKZml0emdlcmFsZF9kb3dubG9hZCA8LSBmaXR6Z2VyYWxkX3RleHQgJT4lIAogICAgICAgICAgICAgICAgICAgICAgZ3V0ZW5iZXJnX2Rvd25sb2FkKG1ldGFfZmllbGRzID0gYygidGl0bGUiLCAiYXV0aG9yIikpCmBgYA==</div>
+Hemingway_files &lt;- vroom(file_list, delim = &quot;.&quot;, col_names = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI0RPIE5PVCBSVU5cbkRBVEFfRElSIDwtIFwiLlwiXG5oZW1pbmd3YXlfY29ycHVzIDwtIHJlYWR0ZXh0KFwiQSBGYXJld2VsbCB0byBBcm1zX0hlbWluZ3dheSwgRXJuZXN0LnR4dFwiLCBkb2N2YXJzZnJvbSA9IFwiZmlsZW5hbWVzXCIsIGRvY3Zhcm5hbWVzID0gYyhcInRpdGxlXCIsIFwiYXV0aG9yXCIpLCBkZXZzZXAgPSBcIl9cIilcbmBgYCJ9 -->
+<pre class="r"><code>#DO NOT RUN
+DATA_DIR &lt;- &quot;.&quot;
+hemingway_corpus &lt;- readtext(&quot;A Farewell to Arms_Hemingway, Ernest.txt&quot;, docvarsfrom = &quot;filenames&quot;, docvarnames = c(&quot;title&quot;, &quot;author&quot;), devsep = &quot;_&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamVjdCAyIgphdXRob3JzOiAiTmF2ZGVlcCBTaW5naCwgU2hyZXlhIEtob2JyYWdhZGUsIFNhbXJpZGhpIEhvb2RhIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7ciBsb2FkX2xpYnJhcmllc30KI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzCmxpYnJhcnkoZ3V0ZW5iZXJncikKbGlicmFyeSh0aWR5dGV4dCkKbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkodnJvb20pCmxpYnJhcnkocmVhZHRleHQpCmBgYAoKYGBge3IgZ3V0ZW5iZXJnX2ZpdHpnZXJhbGRfd29ya3N9CiNmaW5kaW5nIHRleHRzIGJ5IEZpdHpnZXJhbGQgb24gZ3V0ZW5iZXJnCmZpdHpnZXJhbGRfdGV4dCA8LSBndXRlbmJlcmdfd29ya3MoYXV0aG9yID09ICJGaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dCkiKQpgYGAKCmBgYHtyIGd1dGVuYmVyZ19maXR6Z2VyYWxkX2Rvd25sb2FkfQojZG93bmxvYWRpbmcgYWxsIHRoZSB0ZXh0cyBmb3VuZApmaXR6Z2VyYWxkX2Rvd25sb2FkIDwtIGZpdHpnZXJhbGRfdGV4dCAlPiUgCiAgICAgICAgICAgICAgICAgICAgICBndXRlbmJlcmdfZG93bmxvYWQobWV0YV9maWVsZHMgPSBjKCJ0aXRsZSIsICJhdXRob3IiKSkKYGBgCgpgYGB7ciBpbXBvcnRfSGVtaW5nd2F5X2Jvb2tzfQoKVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiVGhlIFN1biBBbHNvIFJpc2VzX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiXHQiLCBxdW90ZSA9ICJcXFwiIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFLCAKICAgIHRyaW1fd3MgPSBUUlVFKQpUaGVfT2xkX01hbl9hbmRfdGhlX1NlYV9IZW1pbmd3YXlfRXJuZXN0IDwtIHJlYWRfZGVsaW0oIlRoZSBPbGQgTWFuIGFuZCB0aGUgU2VhX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiLiIsIHF1b3RlID0gIlxcXCIiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpCkZvcl9XaG9tX3RoZV9CZWxsX1RvbGxzX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiRm9yIFdob20gdGhlIEJlbGwgVG9sbHNfSGVtaW5nd2F5LCBFcm5lc3QudHh0IiwgCiAgICBkZWxpbSA9ICIuIiwgcXVvdGUgPSAiXFxcIiIsIGVzY2FwZV9kb3VibGUgPSBGQUxTRSkKQV9GYXJld2VsbF90b19Bcm1zX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiQSBGYXJld2VsbCB0byBBcm1zX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiLiIsIHF1b3RlID0gIlxcXCIiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpCmBgYAoKYGBge3IgaW1wb3J0X0hlbWluZ3dheV9idWxrfQojRE8gTk9UIFJVTgpmaWxlX2xpc3QgPC0gbGlzdC5maWxlcyhwYXRoID0gIi4iLCByZWN1cnNpdmUgPSBGQUxTRSwgcGF0dGVybiA9ICIqRXJuZXN0LnR4dCQiLCBmdWxsLm5hbWVzID0gRkFMU0UpCgpIZW1pbmd3YXlfZmlsZXMgPC0gdnJvb20oZmlsZV9saXN0LCBkZWxpbSA9ICIuIiwgY29sX25hbWVzID0gRkFMU0UpCmBgYAoKYGBge3IgaGVtaW5nd2F5X2NvcnB1c30KI0RPIE5PVCBSVU4KREFUQV9ESVIgPC0gIi4iCmhlbWluZ3dheV9jb3JwdXMgPC0gcmVhZHRleHQoIkEgRmFyZXdlbGwgdG8gQXJtc19IZW1pbmd3YXksIEVybmVzdC50eHQiLCBkb2N2YXJzZnJvbSA9ICJmaWxlbmFtZXMiLCBkb2N2YXJuYW1lcyA9IGMoInRpdGxlIiwgImF1dGhvciIpLCBkZXZzZXAgPSAiXyIpCmBgYA==</div>
 
 
 

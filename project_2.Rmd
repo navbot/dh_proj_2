@@ -9,7 +9,8 @@ output: html_notebook
 library(gutenbergr)
 library(tidytext)
 library(tidyverse)
-
+library(vroom)
+library(readtext)
 ```
 
 ```{r gutenberg_fitzgerald_works}
@@ -21,4 +22,30 @@ fitzgerald_text <- gutenberg_works(author == "Fitzgerald, F. Scott (Francis Scot
 #downloading all the texts found
 fitzgerald_download <- fitzgerald_text %>% 
                       gutenberg_download(meta_fields = c("title", "author"))
+```
+
+```{r import_Hemingway_books}
+
+The_Sun_Also_Rises_Hemingway_Ernest <- read_delim("The Sun Also Rises_Hemingway, Ernest.txt", 
+    delim = "\t", quote = "\\\"", escape_double = FALSE, 
+    trim_ws = TRUE)
+The_Old_Man_and_the_Sea_Hemingway_Ernest <- read_delim("The Old Man and the Sea_Hemingway, Ernest.txt", 
+    delim = ".", quote = "\\\"", escape_double = FALSE)
+For_Whom_the_Bell_Tolls_Hemingway_Ernest <- read_delim("For Whom the Bell Tolls_Hemingway, Ernest.txt", 
+    delim = ".", quote = "\\\"", escape_double = FALSE)
+A_Farewell_to_Arms_Hemingway_Ernest <- read_delim("A Farewell to Arms_Hemingway, Ernest.txt", 
+    delim = ".", quote = "\\\"", escape_double = FALSE)
+```
+
+```{r import_Hemingway_bulk}
+#DO NOT RUN
+file_list <- list.files(path = ".", recursive = FALSE, pattern = "*Ernest.txt$", full.names = FALSE)
+
+Hemingway_files <- vroom(file_list, delim = ".", col_names = FALSE)
+```
+
+```{r hemingway_corpus}
+#DO NOT RUN
+DATA_DIR <- "."
+hemingway_corpus <- readtext("A Farewell to Arms_Hemingway, Ernest.txt", docvarsfrom = "filenames", docvarnames = c("title", "author"), devsep = "_")
 ```
