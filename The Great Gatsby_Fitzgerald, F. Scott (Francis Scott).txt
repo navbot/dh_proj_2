@@ -1,9 +1,9 @@
-﻿The Great Gatsby
-				  by
-			 F. Scott Fitzgerald
+﻿text
+The Great Gatsby
+by
+F. Scott Fitzgerald
 
-
-                           Table of Contents
+Table of Contents
 
 I
 II
@@ -15,20 +15,16 @@ VII
 VIII
 IX
 
+Once again
+to
+elda
 
-                              Once again
-                                  to
-                                 Zelda
+Then wear the gold hat, if that will move her;
+If you can bounce high, bounce for her too,
+Till she cry “Lover, gold-hatted, high-bouncing lover,
+I must have you!”
 
-  Then wear the gold hat, if that will move her;
-  If you can bounce high, bounce for her too,
-  Till she cry “Lover, gold-hatted, high-bouncing lover,
-  I must have you!”
-
-  Thomas Parke d’Invilliers
-
-
-                                  I
+Thomas Parke d’Invilliers
 
 In my younger and more vulnerable years my father gave me some advice
 that I’ve been turning over in my mind ever since.
@@ -745,7 +741,7 @@ once more for Gatsby he had vanished, and I was alone again in the
 unquiet darkness.
 
 
-                                  II
+                                II
 
 About halfway between West Egg and New York the motor road hastily
 joins the railroad and runs beside it for a quarter of a mile, so as
@@ -1292,7 +1288,7 @@ Pennsylvania Station, staring at the morning Tribune, and waiting for
 the four o’clock train.
 
 
-                                 III
+                               III
 
 There was music from my neighbour’s house through the summer nights.
 In his blue gardens men and girls came and went like moths among the
@@ -2022,7 +2018,7 @@ this is mine: I am one of the few honest people that I have ever
 known.
 
 
-                                  IV
+                                IV
 
 On Sunday morning while church bells rang in the villages alongshore,
 the world and its mistress returned to Gatsby’s house and twinkled
@@ -2651,8 +2647,8 @@ The sun had gone down behind the tall apartments of the movie stars in
 the West Fifties, and the clear voices of children, already gathered
 like crickets on the grass, rose through the hot twilight:
 
- “I’m the Sheik of Araby. Your love belongs to me. At night when
- you’re asleep Into your tent I’ll creep—”
+“I’m the Sheik of Araby. Your love belongs to me. At night when
+you’re asleep Into your tent I’ll creep—”
 
 “It was a strange coincidence,” I said.
 
@@ -2727,7 +2723,7 @@ the girl beside me, tightening my arms. Her wan, scornful mouth
 smiled, and so I drew her up again closer, this time to my face.
 
 
-                                  V
+                                V
 
 When I came home to West Egg that night I was afraid for a moment that
 my house was on fire. Two o’clock and the whole corner of the
@@ -3265,7 +3261,7 @@ out of prac—”
 
 “Don’t talk so much, old sport,” commanded Gatsby. “Play!”
 
- “In the morning, In the evening, Ain’t we got fun—”
+“In the morning, In the evening, Ain’t we got fun—”
 
 Outside the wind was loud and there was a faint flow of thunder along
 the Sound. All the lights were going on in West Egg now; the electric
@@ -3273,8 +3269,8 @@ trains, men-carrying, were plunging home through the rain from New
 York. It was the hour of a profound human change, and excitement was
 generating on the air.
 
- “One thing’s sure and nothing’s surer The rich get richer and the
- poor get—children. In the meantime, In between time—”
+“One thing’s sure and nothing’s surer The rich get richer and the
+poor get—children. In the meantime, In between time—”
 
 As I went over to say goodbye I saw that the expression of
 bewilderment had come back into Gatsby’s face, as though a faint doubt
@@ -3300,7 +3296,7 @@ out of the room and down the marble steps into the rain, leaving them
 there together.
 
 
-                                  VI
+                                VI
 
 About this time an ambitious young reporter from New York arrived one
 morning at Gatsby’s door and asked him if he had anything to say.
@@ -3837,7 +3833,7 @@ air. But they made no sound, and what I had almost remembered was
 uncommunicable forever.
 
 
-                                 VII
+                               VII
 
 It was when curiosity about Gatsby was at its highest that the lights
 in his house failed to go on one Saturday night—and, as obscurely as
@@ -5177,7 +5173,7 @@ the vigil. So I walked away and left him standing there in the
 moonlight—watching over nothing.
 
 
-                                 VIII
+                               VIII
 
 I couldn’t sleep all night; a foghorn was groaning incessantly on the
 Sound, and I tossed half-sick between grotesque reality and savage,
@@ -5728,7 +5724,7 @@ saw Wilson’s body a little way off in the grass, and the holocaust was
 complete.
 
 
-                                  IX
+                                IX
 
 After two years I remember the rest of that day, and that night and
 the next day, only as an endless drill of police and photographers and
@@ -5821,22 +5817,22 @@ newspaper men. When the butler brought back Wolfshiem’s answer I began
 to have a feeling of defiance, of scornful solidarity between Gatsby
 and me against them all.
 
- Dear Mr. Carraway. This has been one of the most terrible shocks of
- my life to me I hardly can believe it that it is true at all. Such a
- mad act as that man did should make us all think. I cannot come down
- now as I am tied up in some very important business and cannot get
- mixed up in this thing now. If there is anything I can do a little
- later let me know in a letter by Edgar. I hardly know where I am when
- I hear about a thing like this and am completely knocked down and
- out.
+Dear Mr. Carraway. This has been one of the most terrible shocks of
+my life to me I hardly can believe it that it is true at all. Such a
+mad act as that man did should make us all think. I cannot come down
+now as I am tied up in some very important business and cannot get
+mixed up in this thing now. If there is anything I can do a little
+later let me know in a letter by Edgar. I hardly know where I am when
+I hear about a thing like this and am completely knocked down and
+out.
 
-                               Yours truly
+                             Yours truly
 
-                             Meyer Wolfshiem
+                           Meyer Wolfshiem
 
 and then hasty addenda beneath:
 
- Let me know about the funeral etc do not know his family at all.
+Let me know about the funeral etc do not know his family at all.
 
 When the phone rang that afternoon and Long Distance said Chicago was
 calling I thought this would be Daisy at last. But the connection came
@@ -6116,27 +6112,27 @@ He opened it at the back cover and turned it around for me to see. On
 the last flyleaf was printed the word schedule, and the date September
 12, 1906. And underneath:
 
-    Rise from bed                                  6:00      a.m.
-    Dumbell exercise and wall-scaling              6:15-6:30 ”
-    Study electricity, etc.                        7:15-8:15 ”
-    Work                                           8:30-4:30 p.m.
-    Baseball and sports                            4:30-5:00 ”
-    Practise elocution, poise and how to attain it 5:00-6:00 ”
-    Study needed inventions                        7:00-9:00 ”
+  Rise from bed                                  6:00      a.m.
+  Dumbell exercise and wall-scaling              6:15-6:30 ”
+  Study electricity, etc.                        7:15-8:15 ”
+  Work                                           8:30-4:30 p.m.
+  Baseball and sports                            4:30-5:00 ”
+  Practise elocution, poise and how to attain it 5:00-6:00 ”
+  Study needed inventions                        7:00-9:00 ”
 
-               General Resolves
+             General Resolves
 
-  * No wasting time at Shafters or [a name, indecipherable]
+* No wasting time at Shafters or [a name, indecipherable]
 
-  * No more smokeing or chewing.
+* No more smokeing or chewing.
 
-  * Bath every other day
+* Bath every other day
 
-  * Read one improving book or magazine per week
+* Read one improving book or magazine per week
 
-  * Save $5.00 [crossed out] $3.00 per week
+* Save $5.00 [crossed out] $3.00 per week
 
-  * Be better to parents
+* Be better to parents
 
 “I came across this book by accident,” said the old man. “It just
 shows you, don’t it?”

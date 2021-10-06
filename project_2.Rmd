@@ -15,6 +15,7 @@ library(readtext)
 ```{r gutenberg_fitzgerald_works}
 #finding texts by Fitzgerald on gutenberg
 fitzgerald_text <- gutenberg_works(author == "Fitzgerald, F. Scott (Francis Scott)")
+fitzgerald_text <- fitzgerald_text[-c(2,3), ]
 ```
 
 ```{r gutenberg_fitzgerald_download}
@@ -22,25 +23,40 @@ fitzgerald_text <- gutenberg_works(author == "Fitzgerald, F. Scott (Francis Scot
 fitzgerald_download <- fitzgerald_text %>% 
                       gutenberg_download(meta_fields = c("title", "author"))
 ```
+```{r import_Fitzgerald_books}
+The_Great_Gatsby <- read_delim("The Great Gatsby_Fitzgerald, F. Scott (Francis Scott).txt", 
+    delim = ".", quote = "\\\"", escape_double = FALSE)
+The_Great_Gatsby <- The_Great_Gatsby %>% mutate(author = "Fitzgerald, F. Scott (Francis Scott)", .after = text) %>% mutate(title = "The Great Gatsby", .before = author)
+
+Tender_is_the_Night <- read_delim("Tender is the Night_Fitzgerald, F. Scott (Francis Scott).txt", 
+    delim = ".", quote = "\\\"", escape_double = FALSE)
+Tender_is_the_Night <- Tender_is_the_Night %>% mutate(author = "Fitzgerald, F. Scott (Francis Scott)", .after = text) %>% mutate(title = "Tender is the Night", .before = author)
+```
+
+```{r create_Fitzgerald_corpus}
+fitzgerald_download$gutenberg_id <- NULL
+fitzgerald_corpus <- bind_rows(fitzgerald_download, The_Great_Gatsby, Tender_is_the_Night)
+```
+
 
 ```{r import_Hemingway_books}
 
 The_Sun_Also_Rises_Hemingway_Ernest <- read_delim("The Sun Also Rises_Hemingway, Ernest.txt", 
     delim = "\t", quote = "\\\"", escape_double = FALSE, 
     trim_ws = TRUE)
-The_Sun_Also_Rises_Hemingway_Ernest <- The_Sun_Also_Rises_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "The Sun Also Rises", .before = text)
+The_Sun_Also_Rises_Hemingway_Ernest <- The_Sun_Also_Rises_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "The Sun Also Rises", .before = author)
 
 The_Old_Man_and_the_Sea_Hemingway_Ernest <- read_delim("The Old Man and the Sea_Hemingway, Ernest.txt", 
     delim = ".", quote = "\\\"", escape_double = FALSE)
-The_Old_Man_and_the_Sea_Hemingway_Ernest <- The_Old_Man_and_the_Sea_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "The Old Man and the Sea", .before = text)
+The_Old_Man_and_the_Sea_Hemingway_Ernest <- The_Old_Man_and_the_Sea_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "The Old Man and the Sea", .before = author)
 
 For_Whom_the_Bell_Tolls_Hemingway_Ernest <- read_delim("For Whom the Bell Tolls_Hemingway, Ernest.txt", 
     delim = ".", quote = "\\\"", escape_double = FALSE)
-For_Whom_the_Bell_Tolls_Hemingway_Ernest <- For_Whom_the_Bell_Tolls_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "For Whom The Bell Tolls", .before = text)
+For_Whom_the_Bell_Tolls_Hemingway_Ernest <- For_Whom_the_Bell_Tolls_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "For Whom The Bell Tolls", .before = author)
 
 A_Farewell_to_Arms_Hemingway_Ernest <- read_delim("A Farewell to Arms_Hemingway, Ernest.txt", 
     delim = ".", quote = "\\\"", escape_double = FALSE)
-A_Farewell_to_Arms_Hemingway_Ernest <- A_Farewell_to_Arms_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "A Farewell to Arms", .before = text)
+A_Farewell_to_Arms_Hemingway_Ernest <- A_Farewell_to_Arms_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "A Farewell to Arms", .before = author)
 
 hemingway_corpus <- bind_rows(The_Sun_Also_Rises_Hemingway_Ernest,The_Old_Man_and_the_Sea_Hemingway_Ernest,For_Whom_the_Bell_Tolls_Hemingway_Ernest,A_Farewell_to_Arms_Hemingway_Ernest)
 ```
@@ -52,7 +68,7 @@ tidy_hemingway <- hemingway_corpus %>% unnest_tokens(word, text) %>% anti_join(s
 
 ```{r tidy_fitzgerald}
 #breaking up texts into words
-tidy_fitzgerald <- fitzgerald_download %>% unnest_tokens(word, text) %>% anti_join(stop_words)
+tidy_fitzgerald <- fitzgerald_corpus %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 ```
 
 ```{r adding_female_words}

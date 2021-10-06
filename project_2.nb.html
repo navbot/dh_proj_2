@@ -217,21 +217,21 @@ pre code {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzXG5saWJyYXJ5KGd1dGVuYmVyZ3IpXG5saWJyYXJ5KHRpZHl0ZXh0KVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHZyb29tKVxubGlicmFyeShyZWFkdGV4dClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzXG5saWJyYXJ5KGd1dGVuYmVyZ3IpXG5saWJyYXJ5KHRpZHl0ZXh0KVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHJlYWR0ZXh0KVxuYGBgIn0= -->
 <pre class="r"><code>#loading all the necessary libraries
 library(gutenbergr)
 library(tidytext)
 library(tidyverse)
-library(vroom)
 library(readtext)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2ZpbmRpbmcgdGV4dHMgYnkgRml0emdlcmFsZCBvbiBndXRlbmJlcmdcbmZpdHpnZXJhbGRfdGV4dCA8LSBndXRlbmJlcmdfd29ya3MoYXV0aG9yID09IFwiRml0emdlcmFsZCwgRi4gU2NvdHQgKEZyYW5jaXMgU2NvdHQpXCIpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2ZpbmRpbmcgdGV4dHMgYnkgRml0emdlcmFsZCBvbiBndXRlbmJlcmdcbmZpdHpnZXJhbGRfdGV4dCA8LSBndXRlbmJlcmdfd29ya3MoYXV0aG9yID09IFwiRml0emdlcmFsZCwgRi4gU2NvdHQgKEZyYW5jaXMgU2NvdHQpXCIpXG5maXR6Z2VyYWxkX3RleHQgPC0gZml0emdlcmFsZF90ZXh0Wy1jKDIsMyksIF1cbmBgYCJ9 -->
 <pre class="r"><code>#finding texts by Fitzgerald on gutenberg
-fitzgerald_text &lt;- gutenberg_works(author == &quot;Fitzgerald, F. Scott (Francis Scott)&quot;)</code></pre>
+fitzgerald_text &lt;- gutenberg_works(author == &quot;Fitzgerald, F. Scott (Francis Scott)&quot;)
+fitzgerald_text &lt;- fitzgerald_text[-c(2,3), ]</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -243,30 +243,125 @@ fitzgerald_download &lt;- fitzgerald_text %&gt;%
                       gutenberg_download(meta_fields = c(&quot;title&quot;, &quot;author&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVGhlX0dyZWF0X0dhdHNieSA8LSByZWFkX2RlbGltKFwiVGhlIEdyZWF0IEdhdHNieV9GaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dCkudHh0XCIsIFxuICAgIGRlbGltID0gXCIuXCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpXG5gYGAifQ== -->
+<pre class="r"><code>The_Great_Gatsby &lt;- read_delim(&quot;The Great Gatsby_Fitzgerald, F. Scott (Francis Scott).txt&quot;, 
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNDczOCBDb2x1bW5zOiAxXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLlwiXG5jaHIgKDEpOiB0ZXh0XG5cbuKEuSBVc2UgYHNwZWMoKWAgdG8gcmV0cmlldmUgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb24gZm9yIHRoaXMgZGF0YS5cbuKEuSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 4738 Columns: 1
+── Column specification ────────────────────────────────────────────────────
+Delimiter: &quot;.&quot;
+chr (1): text
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVGhlX0dyZWF0X0dhdHNieSA8LSBUaGVfR3JlYXRfR2F0c2J5ICU+JSBtdXRhdGUoYXV0aG9yID0gXCJGaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dClcIiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9IFwiVGhlIEdyZWF0IEdhdHNieVwiLCAuYmVmb3JlID0gYXV0aG9yKVxuXG5UZW5kZXJfaXNfdGhlX05pZ2h0IDwtIHJlYWRfZGVsaW0oXCJUZW5kZXIgaXMgdGhlIE5pZ2h0X0ZpdHpnZXJhbGQsIEYuIFNjb3R0IChGcmFuY2lzIFNjb3R0KS50eHRcIiwgXG4gICAgZGVsaW0gPSBcIi5cIiwgcXVvdGUgPSBcIlxcXFxcXFwiXCIsIGVzY2FwZV9kb3VibGUgPSBGQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code>The_Great_Gatsby &lt;- The_Great_Gatsby %&gt;% mutate(author = &quot;Fitzgerald, F. Scott (Francis Scott)&quot;, .after = text) %&gt;% mutate(title = &quot;The Great Gatsby&quot;, .before = author)
+
+Tender_is_the_Night &lt;- read_delim(&quot;Tender is the Night_Fitzgerald, F. Scott (Francis Scott).txt&quot;, 
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMzM0NiBDb2x1bW5zOiAxXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLlwiXG5jaHIgKDEpOiB0ZXh0XG5cbuKEuSBVc2UgYHNwZWMoKWAgdG8gcmV0cmlldmUgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb24gZm9yIHRoaXMgZGF0YS5cbuKEuSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 3346 Columns: 1
+── Column specification ────────────────────────────────────────────────────
+Delimiter: &quot;.&quot;
+chr (1): text
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVGVuZGVyX2lzX3RoZV9OaWdodCA8LSBUZW5kZXJfaXNfdGhlX05pZ2h0ICU+JSBtdXRhdGUoYXV0aG9yID0gXCJGaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dClcIiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9IFwiVGVuZGVyIGlzIHRoZSBOaWdodFwiLCAuYmVmb3JlID0gYXV0aG9yKVxuYGBgIn0= -->
+<pre class="r"><code>Tender_is_the_Night &lt;- Tender_is_the_Night %&gt;% mutate(author = &quot;Fitzgerald, F. Scott (Francis Scott)&quot;, .after = text) %&gt;% mutate(title = &quot;Tender is the Night&quot;, .before = author)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5UaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKFwiVGhlIFN1biBBbHNvIFJpc2VzX0hlbWluZ3dheSwgRXJuZXN0LnR4dFwiLCBcbiAgICBkZWxpbSA9IFwiXFx0XCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UsIFxuICAgIHRyaW1fd3MgPSBUUlVFKVxuVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QgPC0gVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QgJT4lIG11dGF0ZShhdXRob3IgPSBcIkhlbWluZ3dheSwgRWFybmVzdFwiLCAuYWZ0ZXIgPSB0ZXh0KSAlPiUgbXV0YXRlKHRpdGxlID0gXCJUaGUgU3VuIEFsc28gUmlzZXNcIiwgLmJlZm9yZSA9IHRleHQpXG5cblRoZV9PbGRfTWFuX2FuZF90aGVfU2VhX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbShcIlRoZSBPbGQgTWFuIGFuZCB0aGUgU2VhX0hlbWluZ3dheSwgRXJuZXN0LnR4dFwiLCBcbiAgICBkZWxpbSA9IFwiLlwiLCBxdW90ZSA9IFwiXFxcXFxcXCJcIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFKVxuVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCA8LSBUaGVfT2xkX01hbl9hbmRfdGhlX1NlYV9IZW1pbmd3YXlfRXJuZXN0ICU+JSBtdXRhdGUoYXV0aG9yID0gXCJIZW1pbmd3YXksIEVhcm5lc3RcIiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9IFwiVGhlIE9sZCBNYW4gYW5kIHRoZSBTZWFcIiwgLmJlZm9yZSA9IHRleHQpXG5cbkZvcl9XaG9tX3RoZV9CZWxsX1RvbGxzX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbShcIkZvciBXaG9tIHRoZSBCZWxsIFRvbGxzX0hlbWluZ3dheSwgRXJuZXN0LnR4dFwiLCBcbiAgICBkZWxpbSA9IFwiLlwiLCBxdW90ZSA9IFwiXFxcXFxcXCJcIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFKVxuRm9yX1dob21fdGhlX0JlbGxfVG9sbHNfSGVtaW5nd2F5X0VybmVzdCA8LSBGb3JfV2hvbV90aGVfQmVsbF9Ub2xsc19IZW1pbmd3YXlfRXJuZXN0ICU+JSBtdXRhdGUoYXV0aG9yID0gXCJIZW1pbmd3YXksIEVhcm5lc3RcIiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9IFwiRm9yIFdob20gVGhlIEJlbGwgVG9sbHNcIiwgLmJlZm9yZSA9IHRleHQpXG5cbkFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0IDwtIHJlYWRfZGVsaW0oXCJBIEZhcmV3ZWxsIHRvIEFybXNfSGVtaW5nd2F5LCBFcm5lc3QudHh0XCIsIFxuICAgIGRlbGltID0gXCIuXCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpXG5BX0ZhcmV3ZWxsX3RvX0FybXNfSGVtaW5nd2F5X0VybmVzdCA8LSBBX0ZhcmV3ZWxsX3RvX0FybXNfSGVtaW5nd2F5X0VybmVzdCAlPiUgbXV0YXRlKGF1dGhvciA9IFwiSGVtaW5nd2F5LCBFYXJuZXN0XCIsIC5hZnRlciA9IHRleHQpICU+JSBtdXRhdGUodGl0bGUgPSBcIkEgRmFyZXdlbGwgdG8gQXJtc1wiLCAuYmVmb3JlID0gdGV4dClcblxuaGVtaW5nd2F5X2NvcnB1cyA8LSBiaW5kX3Jvd3MoVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QsVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCxGb3JfV2hvbV90aGVfQmVsbF9Ub2xsc19IZW1pbmd3YXlfRXJuZXN0LEFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0KVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0emdlcmFsZF9kb3dubG9hZCRndXRlbmJlcmdfaWQgPC0gTlVMTFxuZml0emdlcmFsZF9jb3JwdXMgPC0gYmluZF9yb3dzKGZpdHpnZXJhbGRfZG93bmxvYWQsIFRoZV9HcmVhdF9HYXRzYnksIFRlbmRlcl9pc190aGVfTmlnaHQpXG5gYGAifQ== -->
+<pre class="r"><code>fitzgerald_download$gutenberg_id &lt;- NULL
+fitzgerald_corpus &lt;- bind_rows(fitzgerald_download, The_Great_Gatsby, Tender_is_the_Night)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogT25lIG9yIG1vcmUgcGFyc2luZyBpc3N1ZXMsIHNlZSBgcHJvYmxlbXMoKWAgZm9yIGRldGFpbHNcbldhcm5pbmc6IE9uZSBvciBtb3JlIHBhcnNpbmcgaXNzdWVzLCBzZWUgYHByb2JsZW1zKClgIGZvciBkZXRhaWxzXG4ifQ== -->
+<pre><code>Warning: One or more parsing issues, see `problems()` for details
+Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5UaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKFwiVGhlIFN1biBBbHNvIFJpc2VzX0hlbWluZ3dheSwgRXJuZXN0LnR4dFwiLCBcbiAgICBkZWxpbSA9IFwiXFx0XCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UsIFxuICAgIHRyaW1fd3MgPSBUUlVFKVxuYGBgIn0= -->
 <pre class="r"><code>
 The_Sun_Also_Rises_Hemingway_Ernest &lt;- read_delim(&quot;The Sun Also Rises_Hemingway, Ernest.txt&quot;, 
     delim = &quot;\t&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE, 
-    trim_ws = TRUE)
-The_Sun_Also_Rises_Hemingway_Ernest &lt;- The_Sun_Also_Rises_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;The Sun Also Rises&quot;, .before = text)
+    trim_ws = TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMzMwOSBDb2x1bW5zOiAxXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiXFx0XCJcbmNociAoMSk6IHRleHRcblxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
+<pre><code>Rows: 3309 Columns: 1
+── Column specification ────────────────────────────────────────────────────
+Delimiter: &quot;\t&quot;
+chr (1): text
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QgPC0gVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QgJT4lIG11dGF0ZShhdXRob3IgPSBcIkhlbWluZ3dheSwgRWFybmVzdFwiLCAuYWZ0ZXIgPSB0ZXh0KSAlPiUgbXV0YXRlKHRpdGxlID0gXCJUaGUgU3VuIEFsc28gUmlzZXNcIiwgLmJlZm9yZSA9IGF1dGhvcilcblxuVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKFwiVGhlIE9sZCBNYW4gYW5kIHRoZSBTZWFfSGVtaW5nd2F5LCBFcm5lc3QudHh0XCIsIFxuICAgIGRlbGltID0gXCIuXCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpXG5gYGAifQ== -->
+<pre class="r"><code>The_Sun_Also_Rises_Hemingway_Ernest &lt;- The_Sun_Also_Rises_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;The Sun Also Rises&quot;, .before = author)
 
 The_Old_Man_and_the_Sea_Hemingway_Ernest &lt;- read_delim(&quot;The Old Man and the Sea_Hemingway, Ernest.txt&quot;, 
-    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)
-The_Old_Man_and_the_Sea_Hemingway_Ernest &lt;- The_Old_Man_and_the_Sea_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;The Old Man and the Sea&quot;, .before = text)
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogODIzIENvbHVtbnM6IDFcbuKUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIuXCJcbmNociAoMSk6IHRleHRcblxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
+<pre><code>Rows: 823 Columns: 1
+── Column specification ────────────────────────────────────────────────────
+Delimiter: &quot;.&quot;
+chr (1): text
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCA8LSBUaGVfT2xkX01hbl9hbmRfdGhlX1NlYV9IZW1pbmd3YXlfRXJuZXN0ICU+JSBtdXRhdGUoYXV0aG9yID0gXCJIZW1pbmd3YXksIEVhcm5lc3RcIiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9IFwiVGhlIE9sZCBNYW4gYW5kIHRoZSBTZWFcIiwgLmJlZm9yZSA9IGF1dGhvcilcblxuRm9yX1dob21fdGhlX0JlbGxfVG9sbHNfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKFwiRm9yIFdob20gdGhlIEJlbGwgVG9sbHNfSGVtaW5nd2F5LCBFcm5lc3QudHh0XCIsIFxuICAgIGRlbGltID0gXCIuXCIsIHF1b3RlID0gXCJcXFxcXFxcIlwiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpXG5gYGAifQ== -->
+<pre class="r"><code>The_Old_Man_and_the_Sea_Hemingway_Ernest &lt;- The_Old_Man_and_the_Sea_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;The Old Man and the Sea&quot;, .before = author)
 
 For_Whom_the_Bell_Tolls_Hemingway_Ernest &lt;- read_delim(&quot;For Whom the Bell Tolls_Hemingway, Ernest.txt&quot;, 
-    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)
-For_Whom_the_Bell_Tolls_Hemingway_Ernest &lt;- For_Whom_the_Bell_Tolls_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;For Whom The Bell Tolls&quot;, .before = text)
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNTkzOCBDb2x1bW5zOiAxXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLlwiXG5jaHIgKDEpOiB0ZXh0XG5cbuKEuSBVc2UgYHNwZWMoKWAgdG8gcmV0cmlldmUgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb24gZm9yIHRoaXMgZGF0YS5cbuKEuSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 5938 Columns: 1
+── Column specification ────────────────────────────────────────────────────
+Delimiter: &quot;.&quot;
+chr (1): text
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuRm9yX1dob21fdGhlX0JlbGxfVG9sbHNfSGVtaW5nd2F5X0VybmVzdCA8LSBGb3JfV2hvbV90aGVfQmVsbF9Ub2xsc19IZW1pbmd3YXlfRXJuZXN0ICU+JSBtdXRhdGUoYXV0aG9yID0gXCJIZW1pbmd3YXksIEVhcm5lc3RcIiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9IFwiRm9yIFdob20gVGhlIEJlbGwgVG9sbHNcIiwgLmJlZm9yZSA9IGF1dGhvcilcblxuQV9GYXJld2VsbF90b19Bcm1zX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbShcIkEgRmFyZXdlbGwgdG8gQXJtc19IZW1pbmd3YXksIEVybmVzdC50eHRcIiwgXG4gICAgZGVsaW0gPSBcIi5cIiwgcXVvdGUgPSBcIlxcXFxcXFwiXCIsIGVzY2FwZV9kb3VibGUgPSBGQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code>For_Whom_the_Bell_Tolls_Hemingway_Ernest &lt;- For_Whom_the_Bell_Tolls_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;For Whom The Bell Tolls&quot;, .before = author)
 
 A_Farewell_to_Arms_Hemingway_Ernest &lt;- read_delim(&quot;A Farewell to Arms_Hemingway, Ernest.txt&quot;, 
-    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)
-A_Farewell_to_Arms_Hemingway_Ernest &lt;- A_Farewell_to_Arms_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;A Farewell to Arms&quot;, .before = text)
+    delim = &quot;.&quot;, quote = &quot;\\\&quot;&quot;, escape_double = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNDE1NCBDb2x1bW5zOiAxXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLlwiXG5jaHIgKDEpOiB0ZXh0XG5cbuKEuSBVc2UgYHNwZWMoKWAgdG8gcmV0cmlldmUgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb24gZm9yIHRoaXMgZGF0YS5cbuKEuSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 4154 Columns: 1
+── Column specification ────────────────────────────────────────────────────
+Delimiter: &quot;.&quot;
+chr (1): text
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQV9GYXJld2VsbF90b19Bcm1zX0hlbWluZ3dheV9Fcm5lc3QgPC0gQV9GYXJld2VsbF90b19Bcm1zX0hlbWluZ3dheV9Fcm5lc3QgJT4lIG11dGF0ZShhdXRob3IgPSBcIkhlbWluZ3dheSwgRWFybmVzdFwiLCAuYWZ0ZXIgPSB0ZXh0KSAlPiUgbXV0YXRlKHRpdGxlID0gXCJBIEZhcmV3ZWxsIHRvIEFybXNcIiwgLmJlZm9yZSA9IGF1dGhvcilcblxuaGVtaW5nd2F5X2NvcnB1cyA8LSBiaW5kX3Jvd3MoVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QsVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCxGb3JfV2hvbV90aGVfQmVsbF9Ub2xsc19IZW1pbmd3YXlfRXJuZXN0LEFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0KVxuYGBgIn0= -->
+<pre class="r"><code>A_Farewell_to_Arms_Hemingway_Ernest &lt;- A_Farewell_to_Arms_Hemingway_Ernest %&gt;% mutate(author = &quot;Hemingway, Earnest&quot;, .after = text) %&gt;% mutate(title = &quot;A Farewell to Arms&quot;, .before = author)
 
 hemingway_corpus &lt;- bind_rows(The_Sun_Also_Rises_Hemingway_Ernest,The_Old_Man_and_the_Sea_Hemingway_Ernest,For_Whom_the_Bell_Tolls_Hemingway_Ernest,A_Farewell_to_Arms_Hemingway_Ernest)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogT25lIG9yIG1vcmUgcGFyc2luZyBpc3N1ZXMsIHNlZSBgcHJvYmxlbXMoKWAgZm9yIGRldGFpbHNcbldhcm5pbmc6IE9uZSBvciBtb3JlIHBhcnNpbmcgaXNzdWVzLCBzZWUgYHByb2JsZW1zKClgIGZvciBkZXRhaWxzXG5XYXJuaW5nOiBPbmUgb3IgbW9yZSBwYXJzaW5nIGlzc3Vlcywgc2VlIGBwcm9ibGVtcygpYCBmb3IgZGV0YWlsc1xuV2FybmluZzogT25lIG9yIG1vcmUgcGFyc2luZyBpc3N1ZXMsIHNlZSBgcHJvYmxlbXMoKWAgZm9yIGRldGFpbHNcbiJ9 -->
+<pre><code>Warning: One or more parsing issues, see `problems()` for details
+Warning: One or more parsing issues, see `problems()` for details
+Warning: One or more parsing issues, see `problems()` for details
+Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -275,14 +370,20 @@ hemingway_corpus &lt;- bind_rows(The_Sun_Also_Rises_Hemingway_Ernest,The_Old_Man
 <pre class="r"><code>#breaking up texts into words
 tidy_hemingway &lt;- hemingway_corpus %&gt;% unnest_tokens(word, text) %&gt;% anti_join(stop_words)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIndvcmRcIlxuIn0= -->
+<pre><code>Joining, by = &quot;word&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2JyZWFraW5nIHVwIHRleHRzIGludG8gd29yZHNcbnRpZHlfZml0emdlcmFsZCA8LSBmaXR6Z2VyYWxkX2Rvd25sb2FkICU+JSB1bm5lc3RfdG9rZW5zKHdvcmQsIHRleHQpICU+JSBhbnRpX2pvaW4oc3RvcF93b3JkcylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2JyZWFraW5nIHVwIHRleHRzIGludG8gd29yZHNcbnRpZHlfZml0emdlcmFsZCA8LSBmaXR6Z2VyYWxkX2NvcnB1cyAlPiUgdW5uZXN0X3Rva2Vucyh3b3JkLCB0ZXh0KSAlPiUgYW50aV9qb2luKHN0b3Bfd29yZHMpXG5gYGAifQ== -->
 <pre class="r"><code>#breaking up texts into words
-tidy_fitzgerald &lt;- fitzgerald_download %&gt;% unnest_tokens(word, text) %&gt;% anti_join(stop_words)</code></pre>
+tidy_fitzgerald &lt;- fitzgerald_corpus %&gt;% unnest_tokens(word, text) %&gt;% anti_join(stop_words)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIndvcmRcIlxuIn0= -->
+<pre><code>Joining, by = &quot;word&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -300,6 +401,9 @@ female_df &lt;- tibble(word = female_words, female = TRUE)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVtaW5nd2F5X3RhZ2dlZCA8LSB0aWR5X2hlbWluZ3dheSAlPiUgbGVmdF9qb2luKGZlbWFsZV9kZilcbmBgYCJ9 -->
 <pre class="r"><code>hemingway_tagged &lt;- tidy_hemingway %&gt;% left_join(female_df)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIndvcmRcIlxuIn0= -->
+<pre><code>Joining, by = &quot;word&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -307,12 +411,17 @@ female_df &lt;- tibble(word = female_words, female = TRUE)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0emdlcmFsZF90YWdnZWQgPC0gdGlkeV9maXR6Z2VyYWxkICU+JSBsZWZ0X2pvaW4oZmVtYWxlX2RmKVxuYGBgIn0= -->
 <pre class="r"><code>fitzgerald_tagged &lt;- tidy_fitzgerald %&gt;% left_join(female_df)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIndvcmRcIlxuIn0= -->
+<pre><code>Joining, by = &quot;word&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0emdlcmFsZF90YWJsZSA8LSBmaXR6Z2VyYWxkX3RhZ2dlZCAlPiUgZ3JvdXBfYnkodGl0bGUpICU+JSBjb3VudChmZW1hbGUpICU+JSBtdXRhdGUocGVyY2VudCA9IG4vc3VtKG4pKjEwMClcblxuYGBgIn0= -->
-<pre class="r"><code>fitzgerald_table &lt;- fitzgerald_tagged %&gt;% group_by(title) %&gt;% count(female) %&gt;% mutate(percent = n/sum(n)*100)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2NvdW50aW5nIGhvdyBvZnRlbiBmZW1hbGUgd29yZHMgYXBwZWFyZWRcbiN0YWJsZSBzaG93cyBlYWNoIHRleHQgYW5kIHRoZSByZXNwZWN0aXZlIHBlcmNlbnRhZ2VcbmZpdHpnZXJhbGRfdGFibGUgPC0gZml0emdlcmFsZF90YWdnZWQgJT4lIGdyb3VwX2J5KHRpdGxlKSAlPiUgY291bnQoZmVtYWxlKSAlPiUgbXV0YXRlKHBlcmNlbnQgPSBuL3N1bShuKSoxMDApXG5cbmBgYCJ9 -->
+<pre class="r"><code>#counting how often female words appeared
+#table shows each text and the respective percentage
+fitzgerald_table &lt;- fitzgerald_tagged %&gt;% group_by(title) %&gt;% count(female) %&gt;% mutate(percent = n/sum(n)*100)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -339,9 +448,9 @@ combined_table &lt;- bind_rows(hemingway_table, fitzgerald_table) %&gt;% drop_na
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVtaW5nd2F5X3dvcmRjb3VudCA8LSB0aWR5X2hlbWluZ3dheSAlPiUgY291bnQod29yZCwgc29ydCA9IFRSVUUpICU+JSBtdXRhdGUoZnJlcXVlbmN5ID0gKG4vc3VtKG4pKSwgLmFmdGVyID0gbilcbmZpdHpnZXJhbGRfd29yZGNvdW50IDwtIHRpZHlfZml0emdlcmFsZCAlPiUgY291bnQod29yZCwgc29ydCA9IFRSVUUpXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVtaW5nd2F5X3dvcmRjb3VudCA8LSB0aWR5X2hlbWluZ3dheSAlPiUgY291bnQod29yZCwgc29ydCA9IFRSVUUpICU+JSBtdXRhdGUoZnJlcXVlbmN5ID0gKG4vc3VtKG4pKSwgLmFmdGVyID0gbilcbmZpdHpnZXJhbGRfd29yZGNvdW50IDwtIHRpZHlfZml0emdlcmFsZCAlPiUgY291bnQod29yZCwgc29ydCA9IFRSVUUpICU+JSBtdXRhdGUoZnJlcXVlbmN5ID0gKG4vc3VtKG4pKSwgLmFmdGVyID0gbilcblxuYGBgIn0= -->
 <pre class="r"><code>hemingway_wordcount &lt;- tidy_hemingway %&gt;% count(word, sort = TRUE) %&gt;% mutate(frequency = (n/sum(n)), .after = n)
-fitzgerald_wordcount &lt;- tidy_fitzgerald %&gt;% count(word, sort = TRUE)
+fitzgerald_wordcount &lt;- tidy_fitzgerald %&gt;% count(word, sort = TRUE) %&gt;% mutate(frequency = (n/sum(n)), .after = n)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -355,7 +464,7 @@ fitzgerald_wordcount &lt;- tidy_fitzgerald %&gt;% count(word, sort = TRUE)
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamVjdCAyIgphdXRob3JzOiAiTmF2ZGVlcCBTaW5naCwgU2hyZXlhIEtob2JyYWdhZGUsIFNhbXJpZGhpIEhvb2RhIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7ciBsb2FkX2xpYnJhcmllc30KI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzCmxpYnJhcnkoZ3V0ZW5iZXJncikKbGlicmFyeSh0aWR5dGV4dCkKbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkocmVhZHRleHQpCmBgYAoKYGBge3IgZ3V0ZW5iZXJnX2ZpdHpnZXJhbGRfd29ya3N9CiNmaW5kaW5nIHRleHRzIGJ5IEZpdHpnZXJhbGQgb24gZ3V0ZW5iZXJnCmZpdHpnZXJhbGRfdGV4dCA8LSBndXRlbmJlcmdfd29ya3MoYXV0aG9yID09ICJGaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dCkiKQpgYGAKCmBgYHtyIGd1dGVuYmVyZ19maXR6Z2VyYWxkX2Rvd25sb2FkfQojZG93bmxvYWRpbmcgYWxsIHRoZSB0ZXh0cyBmb3VuZApmaXR6Z2VyYWxkX2Rvd25sb2FkIDwtIGZpdHpnZXJhbGRfdGV4dCAlPiUgCiAgICAgICAgICAgICAgICAgICAgICBndXRlbmJlcmdfZG93bmxvYWQobWV0YV9maWVsZHMgPSBjKCJ0aXRsZSIsICJhdXRob3IiKSkKYGBgCgpgYGB7ciBpbXBvcnRfSGVtaW5nd2F5X2Jvb2tzfQoKVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiVGhlIFN1biBBbHNvIFJpc2VzX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiXHQiLCBxdW90ZSA9ICJcXFwiIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFLCAKICAgIHRyaW1fd3MgPSBUUlVFKQpUaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCA8LSBUaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCAlPiUgbXV0YXRlKGF1dGhvciA9ICJIZW1pbmd3YXksIEVhcm5lc3QiLCAuYWZ0ZXIgPSB0ZXh0KSAlPiUgbXV0YXRlKHRpdGxlID0gIlRoZSBTdW4gQWxzbyBSaXNlcyIsIC5iZWZvcmUgPSB0ZXh0KQoKVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKCJUaGUgT2xkIE1hbiBhbmQgdGhlIFNlYV9IZW1pbmd3YXksIEVybmVzdC50eHQiLCAKICAgIGRlbGltID0gIi4iLCBxdW90ZSA9ICJcXFwiIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFKQpUaGVfT2xkX01hbl9hbmRfdGhlX1NlYV9IZW1pbmd3YXlfRXJuZXN0IDwtIFRoZV9PbGRfTWFuX2FuZF90aGVfU2VhX0hlbWluZ3dheV9Fcm5lc3QgJT4lIG11dGF0ZShhdXRob3IgPSAiSGVtaW5nd2F5LCBFYXJuZXN0IiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9ICJUaGUgT2xkIE1hbiBhbmQgdGhlIFNlYSIsIC5iZWZvcmUgPSB0ZXh0KQoKRm9yX1dob21fdGhlX0JlbGxfVG9sbHNfSGVtaW5nd2F5X0VybmVzdCA8LSByZWFkX2RlbGltKCJGb3IgV2hvbSB0aGUgQmVsbCBUb2xsc19IZW1pbmd3YXksIEVybmVzdC50eHQiLCAKICAgIGRlbGltID0gIi4iLCBxdW90ZSA9ICJcXFwiIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFKQpGb3JfV2hvbV90aGVfQmVsbF9Ub2xsc19IZW1pbmd3YXlfRXJuZXN0IDwtIEZvcl9XaG9tX3RoZV9CZWxsX1RvbGxzX0hlbWluZ3dheV9Fcm5lc3QgJT4lIG11dGF0ZShhdXRob3IgPSAiSGVtaW5nd2F5LCBFYXJuZXN0IiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9ICJGb3IgV2hvbSBUaGUgQmVsbCBUb2xscyIsIC5iZWZvcmUgPSB0ZXh0KQoKQV9GYXJld2VsbF90b19Bcm1zX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiQSBGYXJld2VsbCB0byBBcm1zX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiLiIsIHF1b3RlID0gIlxcXCIiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpCkFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0IDwtIEFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0ICU+JSBtdXRhdGUoYXV0aG9yID0gIkhlbWluZ3dheSwgRWFybmVzdCIsIC5hZnRlciA9IHRleHQpICU+JSBtdXRhdGUodGl0bGUgPSAiQSBGYXJld2VsbCB0byBBcm1zIiwgLmJlZm9yZSA9IHRleHQpCgpoZW1pbmd3YXlfY29ycHVzIDwtIGJpbmRfcm93cyhUaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCxUaGVfT2xkX01hbl9hbmRfdGhlX1NlYV9IZW1pbmd3YXlfRXJuZXN0LEZvcl9XaG9tX3RoZV9CZWxsX1RvbGxzX0hlbWluZ3dheV9Fcm5lc3QsQV9GYXJld2VsbF90b19Bcm1zX0hlbWluZ3dheV9Fcm5lc3QpCmBgYAoKYGBge3IgdGlkeV9oZW1pbmd3YXl9CiNicmVha2luZyB1cCB0ZXh0cyBpbnRvIHdvcmRzCnRpZHlfaGVtaW5nd2F5IDwtIGhlbWluZ3dheV9jb3JwdXMgJT4lIHVubmVzdF90b2tlbnMod29yZCwgdGV4dCkgJT4lIGFudGlfam9pbihzdG9wX3dvcmRzKQpgYGAKCmBgYHtyIHRpZHlfZml0emdlcmFsZH0KI2JyZWFraW5nIHVwIHRleHRzIGludG8gd29yZHMKdGlkeV9maXR6Z2VyYWxkIDwtIGZpdHpnZXJhbGRfZG93bmxvYWQgJT4lIHVubmVzdF90b2tlbnMod29yZCwgdGV4dCkgJT4lIGFudGlfam9pbihzdG9wX3dvcmRzKQpgYGAKCmBgYHtyIGFkZGluZ19mZW1hbGVfd29yZHN9CiNjb2xsZWN0aW9uIG9mIHdvcmRzIHJlcHJlc2VudGluZyBhIGZlbWFsZQpmZW1hbGVfd29yZHMgPC0gYygic2hlIiwgImhlciIsICJ3b21hbiIsICJnaXJsIiwgImF1bnQiLCAibW90aGVyIiwgInNpc3RlciIsICJ3aWZlIiwgImxhZHkiKQoKZmVtYWxlX2RmIDwtIHRpYmJsZSh3b3JkID0gZmVtYWxlX3dvcmRzLCBmZW1hbGUgPSBUUlVFKQpgYGAKCmBgYHtyIGhlbWluZ3dheV90YWdnZWR9CmhlbWluZ3dheV90YWdnZWQgPC0gdGlkeV9oZW1pbmd3YXkgJT4lIGxlZnRfam9pbihmZW1hbGVfZGYpCmBgYAoKYGBge3IgZml0emdlcmFsZF90YWdnZWR9CmZpdHpnZXJhbGRfdGFnZ2VkIDwtIHRpZHlfZml0emdlcmFsZCAlPiUgbGVmdF9qb2luKGZlbWFsZV9kZikKYGBgCgpgYGB7ciBmaXR6Z2VyYWxkX2NvdW50fQojY291bnRpbmcgaG93IG9mdGVuIGZlbWFsZSB3b3JkcyBhcHBlYXJlZAojdGFibGUgc2hvd3MgZWFjaCB0ZXh0IGFuZCB0aGUgcmVzcGVjdGl2ZSBwZXJjZW50YWdlCmZpdHpnZXJhbGRfdGFibGUgPC0gZml0emdlcmFsZF90YWdnZWQgJT4lIGdyb3VwX2J5KHRpdGxlKSAlPiUgY291bnQoZmVtYWxlKSAlPiUgbXV0YXRlKHBlcmNlbnQgPSBuL3N1bShuKSoxMDApCgpgYGAKCmBgYHtyIGhlbWluZ3dheV9jb3VudH0KI2NvdW50aW5nIGhvdyBvZnRlbiBmZW1hbGUgd29yZHMgYXBwZWFyZWQKI3RhYmxlIHNob3dzIGVhY2ggdGV4dCBhbmQgdGhlIHJlc3BlY3RpdmUgcGVyY2VudGFnZQpoZW1pbmd3YXlfdGFibGUgPC0gaGVtaW5nd2F5X3RhZ2dlZCAlPiUgZ3JvdXBfYnkodGl0bGUpICU+JSBjb3VudChmZW1hbGUpICU+JSBtdXRhdGUocGVyY2VudCA9IG4vc3VtKG4pKjEwMCkKCmBgYAoKYGBge3IgY29tYmluZWRfcmVzdWx0fQojdGFibGUgc2hvd2luZyB0d28gYXV0aG9ycyBhbmQgdGhlaXIgcmVzcGVjdGl2ZSB1c2FnZSBvZiBmZW1hbGUgd29yZHMKYXV0aG9yX3RhYmxlIDwtIGJpbmRfcm93cyhmaXR6Z2VyYWxkX3RhZ2dlZCwgaGVtaW5nd2F5X3RhZ2dlZCkKYXV0aG9yX3RhYmxlIDwtIGF1dGhvcl90YWJsZSAlPiUgZ3JvdXBfYnkoYXV0aG9yKSAlPiUgY291bnQoZmVtYWxlKSAlPiUgbXV0YXRlKHBlcmNlbnQgPSBuL3N1bShuKSoxMDApICU+JSBkcm9wX25hKGZlbWFsZSkKCiN0YWJsZSBzaG93aW5nIGFsbCB0ZXh0cyBhbmQgdGhlaXIgcmVzcGVjdGl2ZSB1c2FnZSBvZiBmZW1hbGUgd29yZHMKY29tYmluZWRfdGFibGUgPC0gYmluZF9yb3dzKGhlbWluZ3dheV90YWJsZSwgZml0emdlcmFsZF90YWJsZSkgJT4lIGRyb3BfbmEoZmVtYWxlKQpgYGAKYGBge3IgZnJlcXVlbmN5X2Rpc3RyaWJ1dGlvbn0KaGVtaW5nd2F5X3dvcmRjb3VudCA8LSB0aWR5X2hlbWluZ3dheSAlPiUgY291bnQod29yZCwgc29ydCA9IFRSVUUpICU+JSBtdXRhdGUoZnJlcXVlbmN5ID0gKG4vc3VtKG4pKSwgLmFmdGVyID0gbikKZml0emdlcmFsZF93b3JkY291bnQgPC0gdGlkeV9maXR6Z2VyYWxkICU+JSBjb3VudCh3b3JkLCBzb3J0ID0gVFJVRSkgJT4lIG11dGF0ZShmcmVxdWVuY3kgPSAobi9zdW0obikpLCAuYWZ0ZXIgPSBuKQoKYGBgCgpgYGB7ciBleHBvcnRpbmdfdGFibGVzfQpzYXZlKGF1dGhvcl90YWJsZSwgZmlsZSA9ICJzYXZlZF9kYXRhLnJkYSIpCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUHJvamVjdCAyIgphdXRob3JzOiAiTmF2ZGVlcCBTaW5naCwgU2hyZXlhIEtob2JyYWdhZGUsIFNhbXJpZGhpIEhvb2RhIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpgYGB7ciBsb2FkX2xpYnJhcmllc30KI2xvYWRpbmcgYWxsIHRoZSBuZWNlc3NhcnkgbGlicmFyaWVzCmxpYnJhcnkoZ3V0ZW5iZXJncikKbGlicmFyeSh0aWR5dGV4dCkKbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkocmVhZHRleHQpCmBgYAoKYGBge3IgZ3V0ZW5iZXJnX2ZpdHpnZXJhbGRfd29ya3N9CiNmaW5kaW5nIHRleHRzIGJ5IEZpdHpnZXJhbGQgb24gZ3V0ZW5iZXJnCmZpdHpnZXJhbGRfdGV4dCA8LSBndXRlbmJlcmdfd29ya3MoYXV0aG9yID09ICJGaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dCkiKQpmaXR6Z2VyYWxkX3RleHQgPC0gZml0emdlcmFsZF90ZXh0Wy1jKDIsMyksIF0KYGBgCgpgYGB7ciBndXRlbmJlcmdfZml0emdlcmFsZF9kb3dubG9hZH0KI2Rvd25sb2FkaW5nIGFsbCB0aGUgdGV4dHMgZm91bmQKZml0emdlcmFsZF9kb3dubG9hZCA8LSBmaXR6Z2VyYWxkX3RleHQgJT4lIAogICAgICAgICAgICAgICAgICAgICAgZ3V0ZW5iZXJnX2Rvd25sb2FkKG1ldGFfZmllbGRzID0gYygidGl0bGUiLCAiYXV0aG9yIikpCmBgYApgYGB7ciBpbXBvcnRfRml0emdlcmFsZF9ib29rc30KVGhlX0dyZWF0X0dhdHNieSA8LSByZWFkX2RlbGltKCJUaGUgR3JlYXQgR2F0c2J5X0ZpdHpnZXJhbGQsIEYuIFNjb3R0IChGcmFuY2lzIFNjb3R0KS50eHQiLCAKICAgIGRlbGltID0gIi4iLCBxdW90ZSA9ICJcXFwiIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFKQpUaGVfR3JlYXRfR2F0c2J5IDwtIFRoZV9HcmVhdF9HYXRzYnkgJT4lIG11dGF0ZShhdXRob3IgPSAiRml0emdlcmFsZCwgRi4gU2NvdHQgKEZyYW5jaXMgU2NvdHQpIiwgLmFmdGVyID0gdGV4dCkgJT4lIG11dGF0ZSh0aXRsZSA9ICJUaGUgR3JlYXQgR2F0c2J5IiwgLmJlZm9yZSA9IGF1dGhvcikKClRlbmRlcl9pc190aGVfTmlnaHQgPC0gcmVhZF9kZWxpbSgiVGVuZGVyIGlzIHRoZSBOaWdodF9GaXR6Z2VyYWxkLCBGLiBTY290dCAoRnJhbmNpcyBTY290dCkudHh0IiwgCiAgICBkZWxpbSA9ICIuIiwgcXVvdGUgPSAiXFxcIiIsIGVzY2FwZV9kb3VibGUgPSBGQUxTRSkKVGVuZGVyX2lzX3RoZV9OaWdodCA8LSBUZW5kZXJfaXNfdGhlX05pZ2h0ICU+JSBtdXRhdGUoYXV0aG9yID0gIkZpdHpnZXJhbGQsIEYuIFNjb3R0IChGcmFuY2lzIFNjb3R0KSIsIC5hZnRlciA9IHRleHQpICU+JSBtdXRhdGUodGl0bGUgPSAiVGVuZGVyIGlzIHRoZSBOaWdodCIsIC5iZWZvcmUgPSBhdXRob3IpCmBgYAoKYGBge3IgY3JlYXRlX0ZpdHpnZXJhbGRfY29ycHVzfQpmaXR6Z2VyYWxkX2Rvd25sb2FkJGd1dGVuYmVyZ19pZCA8LSBOVUxMCmZpdHpnZXJhbGRfY29ycHVzIDwtIGJpbmRfcm93cyhmaXR6Z2VyYWxkX2Rvd25sb2FkLCBUaGVfR3JlYXRfR2F0c2J5LCBUZW5kZXJfaXNfdGhlX05pZ2h0KQpgYGAKCgpgYGB7ciBpbXBvcnRfSGVtaW5nd2F5X2Jvb2tzfQoKVGhlX1N1bl9BbHNvX1Jpc2VzX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiVGhlIFN1biBBbHNvIFJpc2VzX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiXHQiLCBxdW90ZSA9ICJcXFwiIiwgZXNjYXBlX2RvdWJsZSA9IEZBTFNFLCAKICAgIHRyaW1fd3MgPSBUUlVFKQpUaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCA8LSBUaGVfU3VuX0Fsc29fUmlzZXNfSGVtaW5nd2F5X0VybmVzdCAlPiUgbXV0YXRlKGF1dGhvciA9ICJIZW1pbmd3YXksIEVhcm5lc3QiLCAuYWZ0ZXIgPSB0ZXh0KSAlPiUgbXV0YXRlKHRpdGxlID0gIlRoZSBTdW4gQWxzbyBSaXNlcyIsIC5iZWZvcmUgPSBhdXRob3IpCgpUaGVfT2xkX01hbl9hbmRfdGhlX1NlYV9IZW1pbmd3YXlfRXJuZXN0IDwtIHJlYWRfZGVsaW0oIlRoZSBPbGQgTWFuIGFuZCB0aGUgU2VhX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiLiIsIHF1b3RlID0gIlxcXCIiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpClRoZV9PbGRfTWFuX2FuZF90aGVfU2VhX0hlbWluZ3dheV9Fcm5lc3QgPC0gVGhlX09sZF9NYW5fYW5kX3RoZV9TZWFfSGVtaW5nd2F5X0VybmVzdCAlPiUgbXV0YXRlKGF1dGhvciA9ICJIZW1pbmd3YXksIEVhcm5lc3QiLCAuYWZ0ZXIgPSB0ZXh0KSAlPiUgbXV0YXRlKHRpdGxlID0gIlRoZSBPbGQgTWFuIGFuZCB0aGUgU2VhIiwgLmJlZm9yZSA9IGF1dGhvcikKCkZvcl9XaG9tX3RoZV9CZWxsX1RvbGxzX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiRm9yIFdob20gdGhlIEJlbGwgVG9sbHNfSGVtaW5nd2F5LCBFcm5lc3QudHh0IiwgCiAgICBkZWxpbSA9ICIuIiwgcXVvdGUgPSAiXFxcIiIsIGVzY2FwZV9kb3VibGUgPSBGQUxTRSkKRm9yX1dob21fdGhlX0JlbGxfVG9sbHNfSGVtaW5nd2F5X0VybmVzdCA8LSBGb3JfV2hvbV90aGVfQmVsbF9Ub2xsc19IZW1pbmd3YXlfRXJuZXN0ICU+JSBtdXRhdGUoYXV0aG9yID0gIkhlbWluZ3dheSwgRWFybmVzdCIsIC5hZnRlciA9IHRleHQpICU+JSBtdXRhdGUodGl0bGUgPSAiRm9yIFdob20gVGhlIEJlbGwgVG9sbHMiLCAuYmVmb3JlID0gYXV0aG9yKQoKQV9GYXJld2VsbF90b19Bcm1zX0hlbWluZ3dheV9Fcm5lc3QgPC0gcmVhZF9kZWxpbSgiQSBGYXJld2VsbCB0byBBcm1zX0hlbWluZ3dheSwgRXJuZXN0LnR4dCIsIAogICAgZGVsaW0gPSAiLiIsIHF1b3RlID0gIlxcXCIiLCBlc2NhcGVfZG91YmxlID0gRkFMU0UpCkFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0IDwtIEFfRmFyZXdlbGxfdG9fQXJtc19IZW1pbmd3YXlfRXJuZXN0ICU+JSBtdXRhdGUoYXV0aG9yID0gIkhlbWluZ3dheSwgRWFybmVzdCIsIC5hZnRlciA9IHRleHQpICU+JSBtdXRhdGUodGl0bGUgPSAiQSBGYXJld2VsbCB0byBBcm1zIiwgLmJlZm9yZSA9IGF1dGhvcikKCmhlbWluZ3dheV9jb3JwdXMgPC0gYmluZF9yb3dzKFRoZV9TdW5fQWxzb19SaXNlc19IZW1pbmd3YXlfRXJuZXN0LFRoZV9PbGRfTWFuX2FuZF90aGVfU2VhX0hlbWluZ3dheV9Fcm5lc3QsRm9yX1dob21fdGhlX0JlbGxfVG9sbHNfSGVtaW5nd2F5X0VybmVzdCxBX0ZhcmV3ZWxsX3RvX0FybXNfSGVtaW5nd2F5X0VybmVzdCkKYGBgCgpgYGB7ciB0aWR5X2hlbWluZ3dheX0KI2JyZWFraW5nIHVwIHRleHRzIGludG8gd29yZHMKdGlkeV9oZW1pbmd3YXkgPC0gaGVtaW5nd2F5X2NvcnB1cyAlPiUgdW5uZXN0X3Rva2Vucyh3b3JkLCB0ZXh0KSAlPiUgYW50aV9qb2luKHN0b3Bfd29yZHMpCmBgYAoKYGBge3IgdGlkeV9maXR6Z2VyYWxkfQojYnJlYWtpbmcgdXAgdGV4dHMgaW50byB3b3Jkcwp0aWR5X2ZpdHpnZXJhbGQgPC0gZml0emdlcmFsZF9jb3JwdXMgJT4lIHVubmVzdF90b2tlbnMod29yZCwgdGV4dCkgJT4lIGFudGlfam9pbihzdG9wX3dvcmRzKQpgYGAKCmBgYHtyIGFkZGluZ19mZW1hbGVfd29yZHN9CiNjb2xsZWN0aW9uIG9mIHdvcmRzIHJlcHJlc2VudGluZyBhIGZlbWFsZQpmZW1hbGVfd29yZHMgPC0gYygic2hlIiwgImhlciIsICJ3b21hbiIsICJnaXJsIiwgImF1bnQiLCAibW90aGVyIiwgInNpc3RlciIsICJ3aWZlIiwgImxhZHkiKQoKZmVtYWxlX2RmIDwtIHRpYmJsZSh3b3JkID0gZmVtYWxlX3dvcmRzLCBmZW1hbGUgPSBUUlVFKQpgYGAKCmBgYHtyIGhlbWluZ3dheV90YWdnZWR9CmhlbWluZ3dheV90YWdnZWQgPC0gdGlkeV9oZW1pbmd3YXkgJT4lIGxlZnRfam9pbihmZW1hbGVfZGYpCmBgYAoKYGBge3IgZml0emdlcmFsZF90YWdnZWR9CmZpdHpnZXJhbGRfdGFnZ2VkIDwtIHRpZHlfZml0emdlcmFsZCAlPiUgbGVmdF9qb2luKGZlbWFsZV9kZikKYGBgCgpgYGB7ciBmaXR6Z2VyYWxkX2NvdW50fQojY291bnRpbmcgaG93IG9mdGVuIGZlbWFsZSB3b3JkcyBhcHBlYXJlZAojdGFibGUgc2hvd3MgZWFjaCB0ZXh0IGFuZCB0aGUgcmVzcGVjdGl2ZSBwZXJjZW50YWdlCmZpdHpnZXJhbGRfdGFibGUgPC0gZml0emdlcmFsZF90YWdnZWQgJT4lIGdyb3VwX2J5KHRpdGxlKSAlPiUgY291bnQoZmVtYWxlKSAlPiUgbXV0YXRlKHBlcmNlbnQgPSBuL3N1bShuKSoxMDApCgpgYGAKCmBgYHtyIGhlbWluZ3dheV9jb3VudH0KI2NvdW50aW5nIGhvdyBvZnRlbiBmZW1hbGUgd29yZHMgYXBwZWFyZWQKI3RhYmxlIHNob3dzIGVhY2ggdGV4dCBhbmQgdGhlIHJlc3BlY3RpdmUgcGVyY2VudGFnZQpoZW1pbmd3YXlfdGFibGUgPC0gaGVtaW5nd2F5X3RhZ2dlZCAlPiUgZ3JvdXBfYnkodGl0bGUpICU+JSBjb3VudChmZW1hbGUpICU+JSBtdXRhdGUocGVyY2VudCA9IG4vc3VtKG4pKjEwMCkKCmBgYAoKYGBge3IgY29tYmluZWRfcmVzdWx0fQojdGFibGUgc2hvd2luZyB0d28gYXV0aG9ycyBhbmQgdGhlaXIgcmVzcGVjdGl2ZSB1c2FnZSBvZiBmZW1hbGUgd29yZHMKYXV0aG9yX3RhYmxlIDwtIGJpbmRfcm93cyhmaXR6Z2VyYWxkX3RhZ2dlZCwgaGVtaW5nd2F5X3RhZ2dlZCkKYXV0aG9yX3RhYmxlIDwtIGF1dGhvcl90YWJsZSAlPiUgZ3JvdXBfYnkoYXV0aG9yKSAlPiUgY291bnQoZmVtYWxlKSAlPiUgbXV0YXRlKHBlcmNlbnQgPSBuL3N1bShuKSoxMDApICU+JSBkcm9wX25hKGZlbWFsZSkKCiN0YWJsZSBzaG93aW5nIGFsbCB0ZXh0cyBhbmQgdGhlaXIgcmVzcGVjdGl2ZSB1c2FnZSBvZiBmZW1hbGUgd29yZHMKY29tYmluZWRfdGFibGUgPC0gYmluZF9yb3dzKGhlbWluZ3dheV90YWJsZSwgZml0emdlcmFsZF90YWJsZSkgJT4lIGRyb3BfbmEoZmVtYWxlKQpgYGAKYGBge3IgZnJlcXVlbmN5X2Rpc3RyaWJ1dGlvbn0KaGVtaW5nd2F5X3dvcmRjb3VudCA8LSB0aWR5X2hlbWluZ3dheSAlPiUgY291bnQod29yZCwgc29ydCA9IFRSVUUpICU+JSBtdXRhdGUoZnJlcXVlbmN5ID0gKG4vc3VtKG4pKSwgLmFmdGVyID0gbikKZml0emdlcmFsZF93b3JkY291bnQgPC0gdGlkeV9maXR6Z2VyYWxkICU+JSBjb3VudCh3b3JkLCBzb3J0ID0gVFJVRSkgJT4lIG11dGF0ZShmcmVxdWVuY3kgPSAobi9zdW0obikpLCAuYWZ0ZXIgPSBuKQoKYGBgCgpgYGB7ciBleHBvcnRpbmdfdGFibGVzfQpzYXZlKGF1dGhvcl90YWJsZSwgZmlsZSA9ICJzYXZlZF9kYXRhLnJkYSIpCmBgYAoK</div>
 
 
 
