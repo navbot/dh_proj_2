@@ -2,8 +2,9 @@
 title: "Digital Humanities - Ashoka University"
 output: html_document
 ---
-### Project 2
 #### Team members: Navdeep Singh, Shreya Khobragade, Samridhi Hooda
+### [Insert title]
+
 ```{r load_data_libraries, include=FALSE}
 load("saved_data.rda")
 library(knitr)

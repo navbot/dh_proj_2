@@ -118,3 +118,8 @@ fitzgerald_wordcount <- tidy_fitzgerald %>% count(word, sort = TRUE) %>% mutate(
 save(author_table, file = "saved_data.rda")
 ```
 
+```{r wildcard}
+puretext <- bind_rows(tidy_hemingway[, 3], tidy_fitzgerald[, 3])
+purestring <- unlist(puretext)
+sad_1 <- paste(unique(str_subset(purestring, "^anger|^angr|^disgust|^contempt|^revuls|^envy|^envi|^jealous|^exaspera|^frustra|^aggrava|^agitat|^annoy|^grouch|^grump|^irrita|^bitter|^dislike|^feroci|^fury|^furi|^hate|^hostil|^loath|^outrage|^rage|^rag|^resent|^scorn|^spite|^venge|^wrath|^torment|^fear|^horr|^alarm|^fright|^hyster|^mortifi|^panic|^shock|^terror|^nervous|^anxi|^apprehen|^distress|^dread|^tense|^uneasi|^uneasy|^worr|^joy|^cheer|^amuse|^bliss|^delight|^ecsta|^elati|^enjoy|^euphor|^gaiety|^glad|^glee|^happi|^jolli|^jolly|^jovial|^jubil|^satisf|^content|^pleasur|^enthrall|^raptur|^eager|^hope|^optimis|^pride|^proud|^triumph|^relie|^zest|^enthusias|^excit|^exhilara|^thrill|^zeal|^love|^ador|^affec|^attrac|^care|^cari|^compassion|^fond|^like|^liking|^sentiment|^tender|^long|^arous|^desire|^infatuat|^lust|^passion|^sad|^disappoint|^dismay|^displeasur|^alien|^defeat|^deject|^embarrass|^homesick|^humiliat|^insecur|^isola|^insult|^lonel|^neglect|^reject|^depress|^despair|^gloom|^glum|^grie|^hopeless|^melancholi|^miser|^sorrow|^unhappi|^woe|^shame|^guilt|^regret|^remorse|^suffer|^agon|^anguish|^hurt|^pity|^piti|^sympath|^surprise|^amaze|^astonish")), collapse = ' ')
+```
