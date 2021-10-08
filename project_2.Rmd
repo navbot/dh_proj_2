@@ -142,7 +142,7 @@ hemingway_emotion_calc <- hemingway_emotions %>% group_by(title) %>% count(emoti
 ```
 
 ```{r exporting_tables}
-save(author_table, file = "saved_data.rda")
+save(author_table, hemingway_corpus, file = "saved_data.rda")
 ```
 
 ```{r wildcard}
