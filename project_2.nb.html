@@ -459,8 +459,8 @@ hemingway_emotion_calc &lt;- hemingway_emotions %&gt;% group_by(title) %&gt;% co
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tYmluZWRfdGFibGUgPC0gYmluZF9yb3dzKGhlbWluZ3dheV9lbW90aW9uX2NhbGMsIGZpdHpnZXJhbGRfZW1vdGlvbl9jYWxjKSAlPiUgZmlsdGVyKGVtb3Rpb24gPT0gVFJVRSkgJT4lIGdyb3VwX2J5KGF1dGhvcilcblxucDwtZ2dwbG90KGRhdGE9Y29tYmluZWRfdGFibGUsIGFlcyh4PXBlcmNlbnQsIHk9dGl0bGUsIGZpbGw9YXV0aG9yKSkgK1xuICBnZW9tX2JhcihzdGF0PVwiaWRlbnRpdHlcIilcbnBcbmBgYCJ9 -->
-<pre class="r"><code>combined_table &lt;- bind_rows(hemingway_emotion_calc, fitzgerald_emotion_calc) %&gt;% filter(emotion == TRUE) %&gt;% group_by(author)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tYmluZWRfdGFibGUgPC0gYmluZF9yb3dzKGhlbWluZ3dheV9lbW90aW9uX2NhbGMsIGZpdHpnZXJhbGRfZW1vdGlvbl9jYWxjKSAlPiUgZmlsdGVyKGVtb3Rpb24gPT0gVFJVRSlcblxucDwtZ2dwbG90KGRhdGE9Y29tYmluZWRfdGFibGUsIGFlcyh4PXBlcmNlbnQsIHk9dGl0bGUsIGZpbGw9YXV0aG9yKSkgK1xuICBnZW9tX2JhcihzdGF0PVwiaWRlbnRpdHlcIilcbnBcbmBgYCJ9 -->
+<pre class="r"><code>combined_table &lt;- bind_rows(hemingway_emotion_calc, fitzgerald_emotion_calc) %&gt;% filter(emotion == TRUE)
 
 p&lt;-ggplot(data=combined_table, aes(x=percent, y=title, fill=author)) +
   geom_bar(stat=&quot;identity&quot;)
