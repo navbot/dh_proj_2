@@ -11,6 +11,10 @@ library(tidytext)
 library(tidyverse)
 library(readtext)
 library(sentimentr)
+library(ggiraphExtra)
+library(ggplot2)
+library(RColorBrewer)
+library(scales)
 ```
 
 ```{r gutenberg_fitzgerald_works}
@@ -59,13 +63,19 @@ A_Farewell_to_Arms_Hemingway_Ernest <- read_delim("A Farewell to Arms_Hemingway,
     delim = ".", quote = "\\\"", escape_double = FALSE)
 A_Farewell_to_Arms_Hemingway_Ernest <- A_Farewell_to_Arms_Hemingway_Ernest %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "A Farewell to Arms", .before = author)
 
-hemingway_corpus <- bind_rows(The_Sun_Also_Rises_Hemingway_Ernest,The_Old_Man_and_the_Sea_Hemingway_Ernest,For_Whom_the_Bell_Tolls_Hemingway_Ernest,A_Farewell_to_Arms_Hemingway_Ernest)
+The_Garden_of_Eden_Hemingway <- read_delim("The Garden of Eden_Hemingway_clean.txt", 
+    delim = "\t", quote = "\\\"", escape_double = FALSE, 
+    trim_ws = TRUE)
+The_Garden_of_Eden_Hemingway_Ernest <- The_Garden_of_Eden_Hemingway %>% mutate(author = "Hemingway, Earnest", .after = text) %>% mutate(title = "The Garden of Eden", .before = author)
+
+hemingway_corpus <- bind_rows(The_Sun_Also_Rises_Hemingway_Ernest,The_Old_Man_and_the_Sea_Hemingway_Ernest,For_Whom_the_Bell_Tolls_Hemingway_Ernest,A_Farewell_to_Arms_Hemingway_Ernest,The_Garden_of_Eden_Hemingway_Ernest)
 ```
 
 ```{r new_sentiment_analysis}
 #temp <- hemingway_corpus %>% unnest_regex(sentences, text, pattern = "[.?!]", to_lower = TRUE)
-my_text <- read_file("The Great Gatsby_Fitzgerald, F. Scott (Francis Scott)_clean.txt")
+my_text <- read_file("~/Digital.Humanities/dh_proj_2/The Garden of Eden_Hemingway_clean.txt")
 my_text <- get_sentences(my_text)
+new_text <- c(my_text)
 total_sentiment <- sentiment(my_text)
 total <- sum(total_sentiment$sentiment)
 ```
@@ -83,12 +93,83 @@ tidy_all_authors <- all_authors %>% unnest_tokens(word, text) %>% anti_join(stop
 
 ```{r tidy_hemingway}
 #breaking up texts into words
+tidy_eden <- The_Garden_of_Eden_Hemingway_Ernest %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 tidy_hemingway <- hemingway_corpus %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 ```
 
 ```{r tidy_fitzgerald}
 #breaking up texts into words
+tidy_gatsby <- The_Great_Gatsby %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 tidy_fitzgerald <- fitzgerald_corpus %>% unnest_tokens(word, text) %>% anti_join(stop_words)
+```
+
+```{r sentiment_nrc}
+nrc_list <- get_sentiments("nrc")
+counter <- tidy_hemingway %>% inner_join(nrc_list) %>% count(word, sort = TRUE)
+sentiment_h <- tidy_hemingway %>% inner_join(get_sentiments("nrc") %>% 
+                 filter(sentiment %in% c("anger", 
+                                         "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
+    ) %>%
+  count(sentiment) %>%
+  pivot_wider(names_from = sentiment,
+              values_from = n,
+              values_fill = 0) %>% mutate(author = "Hemingway")#%>% 
+  #mutate(sentiment = positive - negative)
+sentiment_h3 <- tidy_eden %>% inner_join(get_sentiments("nrc") %>% 
+                 filter(sentiment %in% c("anger", 
+                                         "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
+    ) %>%
+  count(sentiment) %>%
+  pivot_wider(names_from = sentiment,
+              values_from = n,
+              values_fill = 0) %>% mutate(author = "Hemingway")
+sentiment_h2 <- sentiment_h[,-9]/126688
+sentiment_h2 <- sentiment_h2*100
+sentiment_h2 <- sentiment_h2 %>% mutate(author = "Hemingway")
+#anger	anticipation	disgust	fear	joy	sadness	surprise	trust
+```
+
+```{r}
+nrc_joy <- get_sentiments("nrc")
+#tidy_hemingway %>% inner_join(nrc_list) %>% count(word, sort = TRUE)
+sentiment_f <- tidy_fitzgerald %>% inner_join(get_sentiments("nrc") %>% 
+                 filter(sentiment %in% c("anger", 
+                                         "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
+    ) %>%
+  count(sentiment) %>%
+  pivot_wider(names_from = sentiment,
+              values_from = n,
+              values_fill = 0) %>% mutate(author = "Fitzgerald")
+sentiment_f3 <- tidy_gatsby %>% inner_join(get_sentiments("nrc") %>% 
+                 filter(sentiment %in% c("anger", 
+                                         "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
+    ) %>%
+  count(sentiment) %>%
+  pivot_wider(names_from = sentiment,
+              values_from = n,
+              values_fill = 0) %>% mutate(author = "Fitzgerald")
+sentiment_f2 <- sentiment_f[,-9]/134829
+sentiment_f2 <- sentiment_f2*100
+sentiment_f2 <- sentiment_f2 %>% mutate(author = "Fitzgerald")
+```
+
+```{r}
+sentiment_table <- bind_rows(sentiment_h, sentiment_f)
+#sentiment_table2 <- bind_rows(sentiment_f3, sentiment_h3)
+ggRadar(
+  data = sentiment_table,
+  mapping = aes(color = author),
+  rescale = FALSE,
+  interactive = TRUE,
+  use.label = TRUE,
+  size = 2,
+  legend.position = "right"
+)
+```
+```{r}
+ggplot(data=sentiment_table, aes(x=anger, y=anticipation, fill=author)) +
+  geom_bar(stat="identity")
+
 ```
 
 ```{r adding_female_words}
