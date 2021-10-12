@@ -71,16 +71,6 @@ The_Garden_of_Eden_Hemingway_Ernest <- The_Garden_of_Eden_Hemingway %>% mutate(a
 hemingway_corpus <- bind_rows(The_Sun_Also_Rises_Hemingway_Ernest,The_Old_Man_and_the_Sea_Hemingway_Ernest,For_Whom_the_Bell_Tolls_Hemingway_Ernest,A_Farewell_to_Arms_Hemingway_Ernest,The_Garden_of_Eden_Hemingway_Ernest)
 ```
 
-```{r new_sentiment_analysis}
-#temp <- hemingway_corpus %>% unnest_regex(sentences, text, pattern = "[.?!]", to_lower = TRUE)
-my_text <- read_file("~/Digital.Humanities/dh_proj_2/The Garden of Eden_Hemingway_clean.txt")
-my_text <- get_sentences(my_text)
-new_text <- c(my_text)
-total_sentiment <- sentiment(my_text)
-total <- sum(total_sentiment$sentiment)
-```
-
-
 ```{r all_authors}
 all_authors <- bind_rows(fitzgerald_corpus, hemingway_corpus)
 
