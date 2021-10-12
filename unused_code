@@ -10,3 +10,74 @@ Hemingway_files <- vroom(file_list, delim = ".", col_names = FALSE)
 DATA_DIR <- "."
 hemingway_corpus <- readtext("A Farewell to Arms_Hemingway, Ernest.txt", docvarsfrom = "filenames", docvarnames = c("title", "author"), devsep = "_")
 ```
+## Sentiment Analysis
+
+```{r all_author_sentences}
+all_authors_sentence <- all_authors %>%
+  group_by(author, title, text) %>%
+  summarise (text = paste(text, collapse = "")) %>%
+  unnest_regex(sentences, text, pattern = "[.?!]", to_lower = TRUE)  
+```
+
+```{r author_sentence_nr}
+author_sentence_nr <- all_authors_sentence %>%
+  ungroup() %>%
+  mutate(sentence_number = row_number()) %>%
+  group_by(author, title, sentence_number) %>%
+  unnest_tokens(word, sentences) %>%
+  anti_join(stop_words)
+```
+
+```{r author_concept}
+author_concept <-  author_sentence_nr #%>%
+  #left_join(emotion_words) 
+```
+
+```{r author_concept_sentiment}
+author_concept_sentiment <- author_concept %>%
+  inner_join(get_sentiments("bing"))
+```
+
+```{r author_sentiment_total}
+author_sentiment_total <- author_concept_sentiment %>%
+  count(sentence_number, sentiment) %>%
+  pivot_wider(names_from = sentiment,
+              values_from = n,
+              values_fill = 0)  %>%
+  mutate(sentiment = positive - negative) #%>%
+  #left_join(author_concept) #%>%
+  #filter(emotion == TRUE)
+```
+
+```{r author_sentiment_table}
+author_sentiment_table <- author_sentiment_total %>%
+  #pivot_longer(sentiment,
+               #names_to = "word",
+               #values_to = "total_sentiment")  %>%
+  #drop_na() %>%
+  group_by(title, author) %>%
+  summarise (total = sum(sentiment)) %>%
+  ungroup()
+```
+
+```{r author_sentiment_plot}
+author_sentiment_table %>%
+  ggplot(aes(title, y = total, fill = title)) +
+  geom_col(color = "black",
+           alpha = .7,
+           position = "identity") +
+  #facet_wrap(~ concept) +
+  labs(title = "Positive and Negative Sentiment by Concept",
+       x = "Overal Sentiment",
+       y = "Author",
+       fill = "Title") +
+  coord_flip() 
+```
+```{r new_sentiment_analysis}
+#temp <- hemingway_corpus %>% unnest_regex(sentences, text, pattern = "[.?!]", to_lower = TRUE)
+my_text <- read_file("~/Digital.Humanities/dh_proj_2/The Garden of Eden_Hemingway_clean.txt")
+my_text <- get_sentences(my_text)
+new_text <- c(my_text)
+total_sentiment <- sentiment(my_text)
+total <- sum(total_sentiment$sentiment)
+```

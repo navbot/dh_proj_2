@@ -93,20 +93,18 @@ tidy_all_authors <- all_authors %>% unnest_tokens(word, text) %>% anti_join(stop
 
 ```{r tidy_hemingway}
 #breaking up texts into words
-tidy_eden <- The_Garden_of_Eden_Hemingway_Ernest %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 tidy_hemingway <- hemingway_corpus %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 ```
 
 ```{r tidy_fitzgerald}
 #breaking up texts into words
-tidy_gatsby <- The_Great_Gatsby %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 tidy_fitzgerald <- fitzgerald_corpus %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 ```
 
 ```{r sentiment_nrc}
 nrc_list <- get_sentiments("nrc")
 counter <- tidy_hemingway %>% inner_join(nrc_list) %>% count(word, sort = TRUE)
-sentiment_h <- tidy_hemingway %>% inner_join(get_sentiments("nrc") %>% 
+sentiment_abs_h <- tidy_hemingway %>% inner_join(get_sentiments("nrc") %>% 
                  filter(sentiment %in% c("anger", 
                                          "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
     ) %>%
@@ -115,24 +113,17 @@ sentiment_h <- tidy_hemingway %>% inner_join(get_sentiments("nrc") %>%
               values_from = n,
               values_fill = 0) %>% mutate(author = "Hemingway")#%>% 
   #mutate(sentiment = positive - negative)
-sentiment_h3 <- tidy_eden %>% inner_join(get_sentiments("nrc") %>% 
-                 filter(sentiment %in% c("anger", 
-                                         "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
-    ) %>%
-  count(sentiment) %>%
-  pivot_wider(names_from = sentiment,
-              values_from = n,
-              values_fill = 0) %>% mutate(author = "Hemingway")
-sentiment_h2 <- sentiment_h[,-9]/126688
-sentiment_h2 <- sentiment_h2*100
-sentiment_h2 <- sentiment_h2 %>% mutate(author = "Hemingway")
+total_words_hemingway <- NROW(tidy_hemingway)
+sentiment_rel_h <- sentiment_abs_h[,-9]/total_words_hemingway
+sentiment_rel_h <- sentiment_rel_h*100
+sentiment_rel_h <- sentiment_rel_h %>% mutate(author = "Hemingway")
 #anger	anticipation	disgust	fear	joy	sadness	surprise	trust
 ```
 
 ```{r}
 nrc_joy <- get_sentiments("nrc")
 #tidy_hemingway %>% inner_join(nrc_list) %>% count(word, sort = TRUE)
-sentiment_f <- tidy_fitzgerald %>% inner_join(get_sentiments("nrc") %>% 
+sentiment_abs_f <- tidy_fitzgerald %>% inner_join(get_sentiments("nrc") %>% 
                  filter(sentiment %in% c("anger", 
                                          "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
     ) %>%
@@ -140,24 +131,18 @@ sentiment_f <- tidy_fitzgerald %>% inner_join(get_sentiments("nrc") %>%
   pivot_wider(names_from = sentiment,
               values_from = n,
               values_fill = 0) %>% mutate(author = "Fitzgerald")
-sentiment_f3 <- tidy_gatsby %>% inner_join(get_sentiments("nrc") %>% 
-                 filter(sentiment %in% c("anger", 
-                                         "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust"))
-    ) %>%
-  count(sentiment) %>%
-  pivot_wider(names_from = sentiment,
-              values_from = n,
-              values_fill = 0) %>% mutate(author = "Fitzgerald")
-sentiment_f2 <- sentiment_f[,-9]/134829
-sentiment_f2 <- sentiment_f2*100
-sentiment_f2 <- sentiment_f2 %>% mutate(author = "Fitzgerald")
+
+total_words_fitzgerald <- NROW(tidy_fitzgerald)
+sentiment_rel_f <- sentiment_abs_f[,-9]/total_words_fitzgerald
+sentiment_rel_f <- sentiment_rel_f*100
+sentiment_rel_f <- sentiment_rel_f %>% mutate(author = "Fitzgerald")
 ```
 
 ```{r}
-sentiment_table <- bind_rows(sentiment_h, sentiment_f)
-#sentiment_table2 <- bind_rows(sentiment_f3, sentiment_h3)
+sentiment_both <- bind_rows(sentiment_rel_h, sentiment_rel_f)
+
 ggRadar(
-  data = sentiment_table,
+  data = sentiment_both,
   mapping = aes(color = author),
   rescale = FALSE,
   interactive = TRUE,
@@ -165,54 +150,6 @@ ggRadar(
   size = 2,
   legend.position = "right"
 )
-```
-```{r}
-ggplot(data=sentiment_table, aes(x=anger, y=anticipation, fill=author)) +
-  geom_bar(stat="identity")
-
-```
-
-```{r adding_female_words}
-#collection of words representing a female
-female_words <- c("she", "her", "woman", "girl", "aunt", "mother", "sister", "wife", "lady")
-
-female_df <- tibble(word = female_words, female = TRUE)
-```
-
-```{r hemingway_tagged}
-hemingway_tagged <- tidy_hemingway %>% left_join(female_df)
-```
-
-```{r fitzgerald_tagged}
-fitzgerald_tagged <- tidy_fitzgerald %>% left_join(female_df)
-```
-
-```{r fitzgerald_count}
-#counting how often female words appeared
-#table shows each text and the respective percentage
-fitzgerald_table <- fitzgerald_tagged %>% group_by(title) %>% count(female) %>% mutate(percent = n/sum(n)*100)
-
-```
-
-```{r hemingway_count}
-#counting how often female words appeared
-#table shows each text and the respective percentage
-hemingway_table <- hemingway_tagged %>% group_by(title) %>% count(female) %>% mutate(percent = n/sum(n)*100)
-
-```
-
-```{r combined_result}
-#table showing two authors and their respective usage of female words
-author_table <- bind_rows(fitzgerald_tagged, hemingway_tagged)
-author_table <- author_table %>% group_by(author) %>% count(female) %>% mutate(percent = n/sum(n)*100) %>% drop_na(female)
-
-#table showing all texts and their respective usage of female words
-combined_table <- bind_rows(hemingway_table, fitzgerald_table) %>% drop_na(female)
-```
-```{r frequency_distribution}
-hemingway_wordcount <- tidy_hemingway %>% count(word, sort = TRUE) %>% mutate(frequency = (n/sum(n)), .after = n)
-fitzgerald_wordcount <- tidy_fitzgerald %>% count(word, sort = TRUE) %>% mutate(frequency = (n/sum(n)), .after = n)
-
 ```
 
 ```{r emotion_words}
@@ -250,72 +187,8 @@ p<-ggplot(data=combined_table, aes(x=percent, y=title, fill=author)) +
 p
 ```
 
-## Sentiment Analysis
-
-```{r all_author_sentences}
-all_authors_sentence <- all_authors %>%
-  group_by(author, title, text) %>%
-  summarise (text = paste(text, collapse = "")) %>%
-  unnest_regex(sentences, text, pattern = "[.?!]", to_lower = TRUE)  
-```
-
-```{r author_sentence_nr}
-author_sentence_nr <- all_authors_sentence %>%
-  ungroup() %>%
-  mutate(sentence_number = row_number()) %>%
-  group_by(author, title, sentence_number) %>%
-  unnest_tokens(word, sentences) %>%
-  anti_join(stop_words)
-```
-
-```{r author_concept}
-author_concept <-  author_sentence_nr #%>%
-  #left_join(emotion_words) 
-```
-
-```{r author_concept_sentiment}
-author_concept_sentiment <- author_concept %>%
-  inner_join(get_sentiments("bing"))
-```
-
-```{r author_sentiment_total}
-author_sentiment_total <- author_concept_sentiment %>%
-  count(sentence_number, sentiment) %>%
-  pivot_wider(names_from = sentiment,
-              values_from = n,
-              values_fill = 0)  %>%
-  mutate(sentiment = positive - negative) #%>%
-  #left_join(author_concept) #%>%
-  #filter(emotion == TRUE)
-```
-
-```{r author_sentiment_table}
-author_sentiment_table <- author_sentiment_total %>%
-  #pivot_longer(sentiment,
-               #names_to = "word",
-               #values_to = "total_sentiment")  %>%
-  #drop_na() %>%
-  group_by(title, author) %>%
-  summarise (total = sum(sentiment)) %>%
-  ungroup()
-```
-
-```{r author_sentiment_plot}
-author_sentiment_table %>%
-  ggplot(aes(title, y = total, fill = title)) +
-  geom_col(color = "black",
-           alpha = .7,
-           position = "identity") +
-  #facet_wrap(~ concept) +
-  labs(title = "Positive and Negative Sentiment by Concept",
-       x = "Overal Sentiment",
-       y = "Author",
-       fill = "Title") +
-  coord_flip() 
-```
-
 ```{r exporting_tables}
-save(author_table, hemingway_corpus, file = "saved_data.rda")
+save(author_table, hemingway_corpus, fitzgerald_corpus, file = "saved_data.rda")
 ```
 
 
