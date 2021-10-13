@@ -405,7 +405,7 @@ ggRadar(
 
 #### Radar plot by the highest positive or negative emotion
 
-```{r message=FALSE graphs_fitzgerald}
+```{r message=FALSE}
 radar_facet_sentiment <- entities_matches_sentiment %>%
 
   filter(kind == "person") %>%
