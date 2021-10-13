@@ -1,0 +1,495 @@
+---
+title: "NLP and NER"
+author: "Navdeep Singh"
+date: "13/10/2021"
+output: html_document
+---
+
+# Part 1: Initial setup
+
+## Installing NLP libraries
+
+```{r error=FALSE, eval= FALSE, warning=FALSE, message=FALSE}
+# Run only once
+install.packages("rJava")
+install.packages("openNLP")
+install.packages("NLP")
+install.packages("tcltk2")
+```
+
+## Downloading NLP models
+
+```{r echo=TRUE, eval= FALSE, error=FALSE, warning=FALSE, message=FALSE}
+# Run only once
+install.packages("openNLPmodels.en", dependencies=TRUE, repos = "http://datacube.wu.ac.at/")
+```
+
+## Importing all libraries
+
+```{r echo=TRUE, results='hide', message=FALSE}
+#NLP Libraries
+library(rJava)
+library(openNLP)
+library(NLP)
+
+#Tidy data manipulation
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(tidytext)
+library(readr)
+library(stringi)
+library(textclean)
+
+#Ingest data
+load("saved_data.rda")
+
+#Helper library
+library(sqldf)
+
+#Graphics library
+library(ggiraphExtra)
+library(ggplot2)
+library(RColorBrewer)
+library(scales)
+```
+
+# Part 2: Ingesting corpus
+
+## Importing corpus
+```{r import_corpus}
+corpus <- bind_rows(hemingway_corpus, fitzgerald_corpus)
+```
+
+
+## Cleaning data
+
+### Stripping extraneous characters
+
+```{r pre_clean_corpus}
+corpus_clean <- corpus %>%
+  filter(text != "") %>%
+  mutate(text = str_replace_all(text, "_", " ")) %>%
+  mutate(text = replace_contraction(text)) %>%
+  mutate(text = replace_curly_quote(text))
+```
+
+## Part 3: Preparing data for NER
+
+### Collapsing content of novels into a string
+
+```{r create_strings}
+corpus_text <- corpus_clean %>%
+  group_by(title) %>%
+  mutate(text = paste(as.character(text), collapse = " ")) %>%
+  distinct() %>%
+  ungroup()
+```
+
+### Converting to nested String object
+
+```{r create_nested_string}
+corpus_text_str <- corpus_text %>%
+  group_by(title) %>%
+  mutate(text = list(as.String(text)))
+```
+
+### Setting up NLP pipeline
+
+#### Setting up annotation
+
+```{r initiate_pipeline}
+#set pipeline
+wordAnnotator <- Maxent_Word_Token_Annotator(language = "en")
+sentenceAnnotator <- Maxent_Sent_Token_Annotator(language = "en")
+characterAnnotatorEN <- Maxent_Entity_Annotator(language = "en", kind = "person")
+
+pipeline <- list(sentenceAnnotator, wordAnnotator, characterAnnotatorEN)
+```
+
+### Initiating annotation
+
+#### Chunking and extracting persons
+
+```{r NER_chunker, message=FALSE}
+#create empty df
+full_df = as.data.frame(NULL)
+chunk_size = 10000
+
+for (j in 1:nrow(corpus_text_str)) {
+  #get number of chunks
+  chunk <- nchar(corpus_text_str$text[j]) %/% chunk_size
+  text <- unlist(corpus_text_str$text[j])
+  text <- as.String(text)
+  
+  #Loop runs through the text section by section and reads each chunk into a df
+  
+  for (i in 1:chunk) {
+    print(paste0(
+      "Processing title: ",
+      corpus_text_str$title[j],
+      " - section ",
+      i,
+      " of ",
+      chunk
+    ))
+    temp_df = NULL
+    
+    if (i == 1) {
+      m = 1
+    }
+    
+    if (i == chunk) {
+      m = n + 1
+      n = (nchar(text))
+    }
+    else{
+      n <- m + chunk_size
+    }
+    
+    temp_string = text[m, n]
+    
+    temp_ann <- NLP::annotate(temp_string, pipeline)
+    
+    temp_df <-  temp_ann %>%
+      as.data.frame %>% 
+      filter(type != "word")
+    
+    temp_df <- temp_df %>%
+      mutate(words = str_sub(
+        as.character(temp_string),
+        start = temp_df$start,
+        end = temp_df$end
+      )) %>%
+      unnest_wider(features)
+    
+    temp_df <- temp_df %>%
+      mutate(author = corpus_text_str$author[j], title = corpus_text_str$title[j]) 
+    
+    # Stitching together all data
+    full_df <- full_df %>%
+      bind_rows(temp_df)
+    
+    m <- m + chunk_size
+  }
+}
+
+```
+
+#### Creating backup variable
+
+```{r backup_annotated_data}
+full_df_backup <- full_df
+```
+
+
+#### Rough cleaning the data
+
+```{r rough_clean}
+full_df <-  full_df %>%
+  mutate(words = str_remove_all(words, '[:punct:]'))
+```
+
+#### Realigning the columns
+
+```{r reshape_df}
+full_df <- full_df %>%
+  relocate(c("author", "title"), .before = 1) %>%
+  select(-id,-constituents) 
+```
+
+#### Backing up processed data
+
+```{r backup_annotations, results='hide'}
+write_csv(full_df, "annotation_backup.csv") 
+```
+
+
+#### Restoring data from backup (Optional)
+
+```{r restore_annotated_data}
+#full_df <- read_csv("annotation_backup.csv")
+```
+
+## Part 4: Cleaning annotated text
+
+### Appending locations in each sentence
+
+```{r split_sentence_entity}
+df1 <- full_df %>%
+  filter(type == "sentence") %>%
+  mutate(sentence_num = row_number()) %>%
+  select(author, title, words, sentence_num) %>%
+  rename(sentence = words)
+
+df2 <-  full_df %>%
+  filter(type == "entity") %>%
+  mutate(record = row_number()) %>%
+  select(title, words, kind)
+```
+
+### Cleaning entities thoroughly
+
+```{r computational_cleaning}
+df2 <- df2 %>%
+  mutate(words = str_replace_all(words, "Dear ", "")) %>%
+  mutate(words = str_replace_all(words, "Young ", "")) %>%
+  mutate(words = str_replace_all(words, "Ah", "")) %>%
+  mutate(words = str_replace_all(words, "Oh", "")) %>%
+  mutate(words = str_trim(words, side = "both")) %>%
+  mutate(words = str_trim(gsub("[A-Z]{2,}", "", words))) %>%
+  mutate(words = str_squish(words)) %>%
+  mutate_all( ~ ifelse(. %in% c("N/A", "null", ""), NA, .)) %>%
+  drop_na() %>%
+  dplyr::filter(nchar(words) > 2) %>%
+  distinct()
+
+capital_stopwords <-
+  as.data.frame(str_to_title(stop_words$word)) %>%
+  rename(words = 1)
+
+df2 <- df2 %>%
+  anti_join(capital_stopwords)
+```
+
+### Manually cleaning entities
+
+#### Exporting the table of entities
+
+```{r backup_join}
+write_csv(df2, "pre_join_entities_new.csv")
+```
+
+#### Importing the cleaned table of entities
+
+```{r load_cleaned_data}
+#Prep the data
+pre_join <- read_csv("pre_join_entities_clean.csv", na = "NA")
+```
+
+#### Removing duplicates
+
+```{r limit_join_words}
+pre_join <- pre_join %>%
+  select(words, kind) %>%
+  drop_na()  %>%
+  distinct()
+```
+
+### Joining entities to sentences
+
+```{r match_dataframes}
+#Execute a SQL query
+full_join_df <- sqldf("SELECT *
+      FROM df1
+      LEFT JOIN pre_join ON df1.sentence LIKE '%' || pre_join.words || '%'")
+
+full_join_df <- full_join_df %>%
+  distinct()
+```
+
+## Part 5: Sentiment analysis
+
+### Cleaning entities + sentences table
+
+```{r exporting_entities_raw}
+write_csv(full_join_df, "entities_raw.csv")
+```
+
+
+```{r importing_entities_clean}
+clean_entities <- read.csv("entities_clean.csv")
+```
+
+### Attaching sentiments to entities
+
+#### Unnesting sentences
+
+```{r unnest}
+entities_unnest <- clean_entities %>%
+  unnest_tokens(word, sentence)
+```
+
+#### Dropping Stopwords
+
+```{r remove_stopwords}
+entities_unnest <- entities_unnest %>%
+  anti_join(stop_words)
+```
+
+#### Attaching NRC sentiments
+
+```{r message=FALSE}
+#create sentiment table
+entities_sentiment <- entities_unnest %>%
+  group_by(author, title) %>%
+  inner_join(get_sentiments("nrc")) %>%
+  count(sentence_num, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+```
+
+#### Combining sentiments with entitiees
+
+```{r message=FALSE}
+entities_matches_sentiment <- entities_unnest %>%
+  inner_join(entities_sentiment) %>%
+  distinct_at(vars(-word))  
+```
+
+#### Creating sentiment table
+
+```{r message=FALSE}
+ner_total_sentiment <- entities_matches_sentiment %>% drop_na(words) %>%
+  group_by(author, title, words, kind) %>%
+  summarise(total = mean(sentiment))  
+```
+
+## Part 6: Visualization
+
+### Chart of the top 10 positive entities
+
+```{r message=FALSE}
+ner_total_sentiment %>%
+  group_by(title) %>%
+  filter(kind == "person") %>%
+  top_n(5) %>%
+  mutate(words = reorder(words, total)) %>%
+  ggplot(aes(words, y = total, fill = title)) +
+  geom_col() +
+  facet_wrap(~ title, scales = "free") +
+  coord_flip()
+```
+
+### Chart of the top 10 negative entities
+
+```{r message=FALSE}
+ner_total_sentiment %>%
+  group_by(title) %>%
+  filter(kind == "person") %>%
+  top_n(-5) %>%
+  mutate(words = reorder(words, (desc(total)))) %>%
+  ggplot(aes(words, y = total, fill = title)) +
+  geom_col() +
+  facet_wrap(~ title, scales = "free") +
+  coord_flip()
+```
+
+
+### Visualising entities with NRC emotions
+
+#### Ranking by "total" emotion
+
+```{r radar_plot_total, message=FALSE}
+radar_facet <- entities_matches_sentiment %>% drop_na(words) %>%
+  select(-positive, -negative, -sentiment) %>% #drop out the unnecessary columns 
+  group_by(title, words, kind) %>%
+  summarise(across(anger:trust, sum)) %>%
+  mutate(total = rowSums(across(where(is.numeric))))  %>%
+  arrange(desc(total)) %>%
+  head(10)  %>% #Change number to include more or fewer entities
+  mutate(across(anger:trust, .fns = ~ round((. / total) * 100))) %>%
+  select(-total,-kind)
+
+ggRadar(
+  data = radar_facet,
+  mapping = aes(color = title, facet = words),
+  rescale = FALSE,
+  interactive = TRUE,
+  use.label = TRUE,
+  size = 2,
+  legend.position = "right"
+)
+```
+
+
+#### Radar plot by the highest positive or negative emotion
+
+```{r message=FALSE}
+radar_facet_sentiment <- entities_matches_sentiment %>%
+  #Change filter to locations for locations
+  filter(kind == "person") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>%
+  arrange(desc(sentiment))  %>%
+  head(10)  %>% #Change number to include more or fewer entities
+  select(-positive, -negative, -sentiment, -kind)
+
+tender_is_the_night_protagonist <- entities_matches_sentiment %>% filter(title == "Tender is the Night") %>%
+  #Change filter to locations for locations
+  filter(words == "Dick Diver") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+the_great_gatsby_protagonist <- entities_matches_sentiment %>%
+  #Change filter to locations for locations
+  filter(words == "Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% filter(title == "The Great Gatsby") %>% select(-positive, -negative, -sentiment, -kind)
+
+tggp <- the_great_gatsby_protagonist %>% filter(title == "The Great Gatsby") %>% summarise(across(anger:trust, sum))
+
+data_for_gatsby <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, c("Gats", "Jay")), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+new_gatsby <- data_for_gatsby[c(1:3),c(3:10)] %>%  summarise(across(anger:trust, sum)) %>% mutate(protagonist = "Gatsby", .before  = anger)
+new_gatsby_sum <- bind_rows(data_for_gatsby, new_gatsby)
+
+data_for_diver <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Dick"), ] %>% filter(title == "Tender is the Night") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_anthony <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Antho"), ] %>% filter(title == "The Beautiful and Damned") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_amory <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Amor"), ] %>% filter(title == "This Side of Paradise") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_gatsby <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Gats"), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_daisy <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Dais"), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_gatsby_2 <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Jay"), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_henry <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Cath"), ] %>% filter(title == "A Farewell to Arms") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+temp_table1 <-bind_rows(data_for_gatsby, data_for_gatsby_2) %>% ungroup() %>% select(-title, -words)
+temp_table2 <- data_for_diver %>% ungroup() %>% select(-title, -words)
+temp_table3 <- data_for_anthony %>% ungroup() %>% select(-title, -words)
+temp_table4 <- data_for_amory %>% ungroup() %>% select(-title, -words)
+temp_table5 <- data_for_daisy %>% ungroup() %>% select(-title, -words)
+temp_table6 <- data_for_henry %>% ungroup() %>% select(-title, -words)
+#sum_anger <- data_for_gatsby %>% sum(anger)
+data_for_gatsby_final <- mapply(sum, temp_table1)
+data_for_diver_final <- mapply(sum, temp_table2)
+data_for_anthony_final <- mapply(sum, temp_table3)
+data_for_amory_final <- mapply(sum, temp_table4)
+data_for_daisy_final <- mapply(sum, temp_table5)
+data_for_henry_final <- mapply(sum, temp_table6)
+
+protag_fitz <- read_csv("protag_f.csv") %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
+Gatsby_scale <- protag_fitz %>% filter(protagonist == "Gatsby")
+
+radar_facet_sentiment_2 <- bind_rows(tender_is_the_night_protagonist, the_great_gatsby_protagonist)
+
+ggRadar(
+  data = protag_fitz %>% select(-total),
+  mapping = aes(color = protagonist, facet = protagonist),
+  rescale = FALSE,
+  interactive = TRUE,
+  use.label = TRUE,
+  size = 2,
+  legend.position = "right"
+)
+```

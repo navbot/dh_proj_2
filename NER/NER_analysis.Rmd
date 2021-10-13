@@ -46,7 +46,6 @@ load("saved_data.rda")
 
 #Helper library
 library(sqldf)
-library(tcltk2)
 
 #Graphics library
 library(ggiraphExtra)
