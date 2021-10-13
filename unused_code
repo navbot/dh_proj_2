@@ -81,3 +81,49 @@ new_text <- c(my_text)
 total_sentiment <- sentiment(my_text)
 total <- sum(total_sentiment$sentiment)
 ```
+```{r filtering_protagonists}
+tggp <- the_great_gatsby_protagonist %>% filter(title == "The Great Gatsby") %>% summarise(across(anger:trust, sum))
+
+data_for_gatsby <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, c("Gats", "Jay")), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+new_gatsby <- data_for_gatsby[c(1:3),c(3:10)] %>%  summarise(across(anger:trust, sum)) %>% mutate(protagonist = "Gatsby", .before  = anger)
+new_gatsby_sum <- bind_rows(data_for_gatsby, new_gatsby)
+
+data_for_diver <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Dick"), ] %>% filter(title == "Tender is the Night") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+  
+data_for_gatsby <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Gats"), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_daisy <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Dais"), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+
+data_for_gatsby_2 <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Jay"), ] %>% filter(title == "The Great Gatsby") %>%
+  group_by(title, words, kind) %>%
+  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
+  
+temp_table1 <-bind_rows(data_for_gatsby, data_for_gatsby_2) %>% ungroup() %>% select(-title, -words)
+temp_table2 <- data_for_diver %>% ungroup() %>% select(-title, -words)
+temp_table3 <- data_for_anthony %>% ungroup() %>% select(-title, -words)
+temp_table4 <- data_for_amory %>% ungroup() %>% select(-title, -words)
+temp_table5 <- data_for_daisy %>% ungroup() %>% select(-title, -words)
+temp_table6 <- data_for_henry %>% ungroup() %>% select(-title, -words)
+#sum_anger <- data_for_gatsby %>% sum(anger)
+data_for_gatsby_final <- mapply(sum, temp_table1)
+data_for_diver_final <- mapply(sum, temp_table2)
+data_for_anthony_final <- mapply(sum, temp_table3)
+data_for_amory_final <- mapply(sum, temp_table4)
+data_for_daisy_final <- mapply(sum, temp_table5)
+data_for_henry_final <- mapply(sum, temp_table6)
+
+protag_fitz <- read_csv("protag_f.csv") %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
+Gatsby_scale <- protag_fitz %>% filter(protagonist == "Gatsby")
+
+radar_facet_sentiment_2 <- bind_rows(tender_is_the_night_protagonist, the_great_gatsby_protagonist)
+
+```

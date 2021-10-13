@@ -405,9 +405,9 @@ ggRadar(
 
 #### Radar plot by the highest positive or negative emotion
 
-```{r message=FALSE}
+```{r message=FALSE graphs_fitzgerald}
 radar_facet_sentiment <- entities_matches_sentiment %>%
-  #Change filter to locations for locations
+
   filter(kind == "person") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>%
@@ -416,29 +416,14 @@ radar_facet_sentiment <- entities_matches_sentiment %>%
   select(-positive, -negative, -sentiment, -kind) %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
 
 sentiment_Dick_Diver <- entities_matches_sentiment %>% filter(title == "Tender is the Night") %>%
-  #Change filter to locations for locations
   filter(words == "Dick") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
 sentiment_Gatsby <- entities_matches_sentiment %>%
-  #Change filter to locations for locations
   filter(words == "Gatsby") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% filter(title == "The Great Gatsby") %>% select(-positive, -negative, -sentiment, -kind)
-
-tggp <- the_great_gatsby_protagonist %>% filter(title == "The Great Gatsby") %>% summarise(across(anger:trust, sum))
-
-data_for_gatsby <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, c("Gats", "Jay")), ] %>% filter(title == "The Great Gatsby") %>%
-  group_by(title, words, kind) %>%
-  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
-
-new_gatsby <- data_for_gatsby[c(1:3),c(3:10)] %>%  summarise(across(anger:trust, sum)) %>% mutate(protagonist = "Gatsby", .before  = anger)
-new_gatsby_sum <- bind_rows(data_for_gatsby, new_gatsby)
-
-data_for_diver <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Dick"), ] %>% filter(title == "Tender is the Night") %>%
-  group_by(title, words, kind) %>%
-  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
 sentiment_Anthony <- entities_matches_sentiment %>% filter(words == "Anthony") %>% filter(title == "The Beautiful and Damned") %>%
   group_by(title, words, kind) %>%
@@ -448,47 +433,15 @@ sentiment_Amory <- entities_matches_sentiment[str_detect(entities_matches_sentim
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
-data_for_gatsby <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Gats"), ] %>% filter(title == "The Great Gatsby") %>%
-  group_by(title, words, kind) %>%
-  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
-
-data_for_daisy <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Dais"), ] %>% filter(title == "The Great Gatsby") %>%
-  group_by(title, words, kind) %>%
-  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
-
-data_for_gatsby_2 <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Jay"), ] %>% filter(title == "The Great Gatsby") %>%
-  group_by(title, words, kind) %>%
-  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
-
 sentiment_Henry <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Henry"), ] %>% filter(title == "A Farewell to Arms") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
-all_protag <- bind_rows(sentiment_Gatsby, sentiment_Anthony, sentiment_Amory, sentiment_Dick_Diver) %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
-
-
-temp_table1 <-bind_rows(data_for_gatsby, data_for_gatsby_2) %>% ungroup() %>% select(-title, -words)
-temp_table2 <- data_for_diver %>% ungroup() %>% select(-title, -words)
-temp_table3 <- data_for_anthony %>% ungroup() %>% select(-title, -words)
-temp_table4 <- data_for_amory %>% ungroup() %>% select(-title, -words)
-temp_table5 <- data_for_daisy %>% ungroup() %>% select(-title, -words)
-temp_table6 <- data_for_henry %>% ungroup() %>% select(-title, -words)
-#sum_anger <- data_for_gatsby %>% sum(anger)
-data_for_gatsby_final <- mapply(sum, temp_table1)
-data_for_diver_final <- mapply(sum, temp_table2)
-data_for_anthony_final <- mapply(sum, temp_table3)
-data_for_amory_final <- mapply(sum, temp_table4)
-data_for_daisy_final <- mapply(sum, temp_table5)
-data_for_henry_final <- mapply(sum, temp_table6)
-
-protag_fitz <- read_csv("protag_f.csv") %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
-Gatsby_scale <- protag_fitz %>% filter(protagonist == "Gatsby")
-
-radar_facet_sentiment_2 <- bind_rows(tender_is_the_night_protagonist, the_great_gatsby_protagonist)
+all_protag_fitz <- bind_rows(sentiment_Gatsby, sentiment_Anthony, sentiment_Amory, sentiment_Dick_Diver) %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
 
 ggRadar(
-  # Add select(-total)
-  data = all_protag %>% select(-total),
+
+  data = all_protag_fitz %>% select(-total),
   mapping = aes(color = title, facet = words),
   rescale = FALSE,
   interactive = TRUE,
@@ -501,34 +454,30 @@ ggRadar(
 
 ```{r graphs_hemingway}
 sentiment_Henry <- entities_matches_sentiment %>% filter(title == "A Farewell to Arms") %>%
-  #Change filter to locations for locations
   filter(words == "Henry") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
 sentiment_Robert <- entities_matches_sentiment %>% filter(title == "For Whom The Bell Tolls") %>%
-  #Change filter to locations for locations
   filter(words == "Robert Jordan") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
 sentiment_Jake <- entities_matches_sentiment %>% filter(title == "The Sun Also Rises") %>%
-  #Change filter to locations for locations
   filter(words == "Barnes") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
 sentiment_David <- entities_matches_sentiment %>% filter(title == "The Garden of Eden") %>%
-  #Change filter to locations for locations
   filter(words == "David") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
-all_protag_h <- bind_rows(sentiment_Henry, sentiment_Robert, sentiment_Jake, sentiment_David) %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
+all_protag_hemi <- bind_rows(sentiment_Henry, sentiment_Robert, sentiment_Jake, sentiment_David) %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
 
 ggRadar(
-  # Add select(-total)
-  data = all_protag_h %>% select(-total),
+
+  data = all_protag_hemi %>% select(-total),
   mapping = aes(color = title, facet = words),
   rescale = FALSE,
   interactive = TRUE,
