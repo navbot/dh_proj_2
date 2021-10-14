@@ -15,6 +15,8 @@ library(ggiraphExtra)
 library(ggplot2)
 library(RColorBrewer)
 library(scales)
+library(plotly)
+library(htmlwidgets)
 ```
 
 ```{r gutenberg_fitzgerald_works}
@@ -131,7 +133,7 @@ sentiment_rel_f <- sentiment_rel_f %>% mutate(author = "Fitzgerald")
 ```{r}
 sentiment_both <- bind_rows(sentiment_rel_h, sentiment_rel_f)
 
-ggRadar(
+data_vis_2 <- ggRadar(
   data = sentiment_both,
   mapping = aes(color = author),
   rescale = FALSE,
@@ -172,13 +174,16 @@ hemingway_emotion_calc <- hemingway_emotions %>% group_by(title) %>% count(emoti
 ```{r emotion_plot}
 combined_table <- bind_rows(hemingway_emotion_calc, fitzgerald_emotion_calc) %>% filter(emotion == TRUE)
 
-p<-ggplot(data=combined_table, aes(x=percent, y=title, fill=author)) +
-  geom_bar(stat="identity")
-p
+data_vis_1 <-ggplot(data=combined_table, aes(x=percent, y=title, fill=author, text = paste("% of emotion: ", percent, sep = ""))) +
+  geom_bar(stat="identity") + labs(x = "% of emotion detected", 
+       y = "All novels", fill = "Author", title = "Emotive content in all novels")
+       
+data_vis_1_int <- ggplotly(data_vis_1, tooltip = "text")
+data_vis_1_int
 ```
 
 ```{r exporting_tables}
-save(author_table, hemingway_corpus, fitzgerald_corpus, file = "saved_data.rda")
+save(author_table, hemingway_corpus, fitzgerald_corpus, data_vis_1_int, data_vis_2, file = "saved_data.rda")
 ```
 
 
