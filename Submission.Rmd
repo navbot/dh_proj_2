@@ -26,11 +26,11 @@ We will briefly explore some of these questions in our analysis of F. Scott Fitz
 
 #### Hypothesis
 
-The novels of F. Scott Fitzgerald contain more emotion than the novels of Earnest Hemingway.
+The novels of F. Scott Fitzgerald contain more emotion than the novels of Ernest Hemingway.
 
 #### Corpus Description
 
-We undertook a comparative study of Ernest Hemingway and F. Scott Fitzgerald’s novels. The corpus was created based on availability. Hemingway's works were not on available on Gutenberg, and had to be obtained from a different resource. The files thus obtained were not clean, and contained textual artifacts. The files were cleaned thoroughly so as to prevent issues in analysis. Since Fitzgerald has only 4 finished novels, we obtained 4 novels of Hemingway as well. But the word count differed drastically, so we added Hemingway's _Garden of Eden_ to reach desirable balance in wordcount.
+We undertook a comparative study of Ernest Hemingway and F. Scott Fitzgerald’s novels. The corpus was created based on availability. Hemingway's works were not available on Gutenberg, and had to be obtained from a different resource. The files thus obtained were not clean, and contained textual artifacts. The files were cleaned thoroughly so as to prevent issues in analysis. Since Fitzgerald has only 4 finished novels, we obtained 4 novels of Hemingway as well. But the word count differed drastically, so we added Hemingway's _Garden of Eden_ to reach desirable balance in wordcount.
 
 Despite this minor setback, we were optimistic that we would find interesting results, for two reasons. Firstly, both authors wrote in the early 1900s, during what was called the “Jazz Age”, but in very different styles, and about very different subject matter. Fitzgerald’s world held soirees, idle wealth, and hedonism; while Hemingway’s held grit, frugality, and violence. Their writing styles are also quite distinct, with Hemingway’s work being characterized by its short, clipped sentences, devoid of adverbs, and Fitzgerald’s with more verbose, descriptive writing. What they do have in common is a picture of post-war industrialist America, wrought with disillusionment but slowly rebuilding. 
 
@@ -60,7 +60,7 @@ Thus, our corpus summary seems to indicate that our intuition about the differen
 
 ### Data Visualization 1: Sentiment Analysis and Relative Frequency
 
-In qualitative reading of literature, it is easy to question what it means for one text to be more emotional than another. One may argue that even simple descriptive paragraphs have emotion attached to them. But it is important to note that our tools are only equipped tell us which author’s work is more overtly emotional: that is, which author’s work will let us decipher emotion without having to analyse subtext or metaphors. Close reading may or may not corroborate our findings, and lack of emotion in our findings definitely does not mean that an author employs less emotion in his writing.
+In qualitative reading of literature, it is easy to question what it means for one text to be more emotional than another. One may argue that even simple descriptive paragraphs have emotion attached to them. But it is important to note that our tools are only equipped to tell us which author’s work is more overtly emotional: that is, which author’s work will let us decipher emotion without having to analyse subtext or metaphors. Close reading may or may not corroborate our findings, and lack of emotion in our findings definitely does not mean that an author employs less emotion in his writing.
 
 For this task, we created a lexicon with handpicked words to represent various emotions. These include basic, broad ones like joy and anger, but also more specific ones such as pride and resentment. We also employed code to generate variations of these words, including adverbs, and thus we had a sizable number of unique emotion words at our disposal. However, since this lexicon has been manually compiled, the possibility that some useful words were missed always lingers.
 
@@ -70,7 +70,7 @@ We first matched these words with each author's corpus, and calculated their occ
 data_vis_1_int
 ```
 
-As the graph indicates, Fitzgerald work has a higher percentage of these emotion words. His least emotional novel, _The Great Gatsby_, with only _2.5%_ of the words matching our lexicon, is still higher than Hemingway's most emotional novel -- _A Farewell To Arms_, which stands at _2.1%_. _The Old Man and The Sea_ has the lowest score of the corpus.
+As the graph indicates, Fitzgerald's work has a higher percentage of these emotion words. His least emotional novel, _The Great Gatsby_, with only _2.5%_ of the words matching our lexicon, is still higher than Hemingway's most emotional novel -- _A Farewell To Arms_, which stands at _2.1%_. _The Old Man and The Sea_ has the lowest score of the corpus.
 
 The reason for Hemingway's scores is largely stylistic. Because a lot of emotion is embedded in adverbs, a good percentage of our lexicon consists of adverbs, which are exactly what Hemingway's writing lacks. A lot of Hemingway's characters are also hypermasculine and shy away from explicit expression of their emotions. In fact, if one were to read closely, it is by means of this stoic masculine facade that their true feelings can be deciphered. Our tools, however, lack the ability to detect subtext and decipher metaphors, analogies, irony, sarcasm, and the likes. Even when reading at a sentence- or paragraph-level, the tools are ill-equipped to decode a non-explicit expression of emotion.
 
