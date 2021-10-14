@@ -138,10 +138,12 @@ data_vis_2 <- ggRadar(
   mapping = aes(color = author),
   rescale = FALSE,
   interactive = TRUE,
-  use.label = TRUE,
   size = 2,
+  grid.min = 1,
+  centre.y = 0,
   legend.position = "right"
 )
+data_vis_2
 ```
 
 ```{r emotion_words}

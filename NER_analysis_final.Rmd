@@ -180,6 +180,7 @@ for (j in 1:nrow(corpus_text_str)) {
 
 ```{r backup_annotated_data}
 full_df_backup <- full_df
+write_csv(full_df, "full_df_backup.csv")
 ```
 
 
@@ -350,29 +351,35 @@ ner_total_sentiment <- entities_matches_sentiment %>% drop_na(words) %>%
 ### Chart of the top 10 positive entities
 
 ```{r message=FALSE}
-ner_total_sentiment %>%
+vis_ner_1 <- ner_total_sentiment %>%
   group_by(title) %>%
-  filter(kind == "person") %>%
+  filter(kind == "person") %>% filter(title != "The Old Man and the Sea") %>%
   top_n(5) %>%
   mutate(words = reorder(words, total)) %>%
-  ggplot(aes(words, y = total, fill = title)) +
-  geom_col() +
-  facet_wrap(~ title, scales = "free") +
-  coord_flip()
-```
+  ggplot(aes(words, y = total, fill = title, text = paste("Character: ", words, "\n", "% of positive emotion: ", total, sep = ""))) +
+  geom_col()  +
+  facet_wrap(~ title, scales = "free", ncol = 2) +coord_flip() + labs(x = "Names of characters", 
+       y = "% of positive emotion", fill = "Novel", title = "% of Positive Emotions Detected")
 
+vis_ner_1_int <- ggplotly(vis_ner_1, tooltip = "text")
+vis_ner_1_int 
+```
+theme(plot.margin = margin(0, 0, 0, 0, "cm"))
 ### Chart of the top 10 negative entities
 
 ```{r message=FALSE}
-ner_total_sentiment %>%
+vis_ner_2 <- ner_total_sentiment %>%
   group_by(title) %>%
   filter(kind == "person") %>%
   top_n(-5) %>%
   mutate(words = reorder(words, (desc(total)))) %>%
-  ggplot(aes(words, y = total, fill = title)) +
+  ggplot(aes(words, x = total, fill = title, text = paste("Character: ", words, "\n", "% of negative emotion: ", 0 - total, sep = ""))) +
   geom_col() +
-  facet_wrap(~ title, scales = "free") +
-  coord_flip()
+  facet_wrap(~ title, scales = "free") + labs(x = "Names of characters", 
+       y = "% of negative emotion", fill = "Novel", title = "% of Negative Emotions Detected")
+vis_ner_2_int <- ggplotly(vis_ner_2, tooltip = "text")
+vis_ner_2_int
+
 ```
 
 
@@ -429,17 +436,13 @@ sentiment_Anthony <- entities_matches_sentiment %>% filter(words == "Anthony") %
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
-sentiment_Amory <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Amor"), ] %>% filter(title == "This Side of Paradise") %>%
-  group_by(title, words, kind) %>%
-  summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
-
-sentiment_Henry <- entities_matches_sentiment[str_detect(entities_matches_sentiment$words, "Henry"), ] %>% filter(title == "A Farewell to Arms") %>%
+sentiment_Amory <- entities_matches_sentiment %>% filter(words == "Amory") %>% filter(title == "This Side of Paradise") %>%
   group_by(title, words, kind) %>%
   summarise(across(anger:sentiment, sum)) %>% select(-positive, -negative, -sentiment, -kind)
 
 all_protag_fitz <- bind_rows(sentiment_Gatsby, sentiment_Anthony, sentiment_Amory, sentiment_Dick_Diver) %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
 
-ggRadar(
+vis_ner_3 <- ggRadar(
 
   data = all_protag_fitz %>% select(-total),
   mapping = aes(color = title, facet = words),
@@ -449,6 +452,7 @@ ggRadar(
   size = 2,
   legend.position = "right"
 )
+vis_ner_3
 ```
 
 
@@ -475,7 +479,7 @@ sentiment_David <- entities_matches_sentiment %>% filter(title == "The Garden of
 
 all_protag_hemi <- bind_rows(sentiment_Henry, sentiment_Robert, sentiment_Jake, sentiment_David) %>% mutate(total = rowSums(across(where(is.numeric)))) %>% mutate(across(anger:trust, .fns = ~ round((. / total) * 100)))
 
-ggRadar(
+vis_ner_4 <- ggRadar(
 
   data = all_protag_hemi %>% select(-total),
   mapping = aes(color = title, facet = words),
@@ -485,6 +489,10 @@ ggRadar(
   size = 2,
   legend.position = "right"
 )
+vis_ner_4
 
 ```
 
+```{r exporting_tables}
+save(vis_ner_1_int, vis_ner_2_int, vis_ner_3, vis_ner_4, file = "saved_ner.rda")
+```
