@@ -15,7 +15,7 @@ load("saved_data.rda")
 load("saved_ner.rda")
 library(knitr)
 ```
-### Understanding Emotion in Hemingway's and Fitzgerald's work
+### Throwing Fitz in E(a)rnest: An Analysis of Emotion in Fitzgerald and Hemingway
 
 
 ### Introduction and Research Question
