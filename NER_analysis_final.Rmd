@@ -320,14 +320,64 @@ entities_unnest <- entities_unnest %>%
 
 #### Attaching NRC sentiments
 
+```{r bigrams}
+nrc_pos <- get_sentiments("nrc")
+nrc_neg <- all_sentiments %>% mutate(negation = paste("not ", word)) %>% select(-word) %>% mutate(sentiment = paste("not", sentiment))
+
+nrc_neg <- rename(nrc_neg, bigram = negation) 
+nrc_neg <- nrc_neg %>% relocate(sentiment, .after = bigram)
+
+entities_bigram <- clean_entities %>%
+  unnest_tokens(bigram, sentence, token = "ngrams", n = 2)
+entities_bigram_sep <- entities_bigram %>% separate(bigram, c("word1", "word2"), sep = " ")
+
+
+entities_neg <- entities_bigram_sep %>% filter(word1 == "not") %>% inner_join(nrc_pos, by = c(word2 = "word"))
+
+entities_neg <- entities_neg %>% select(-word1) %>% rename(word = word2) %>% mutate(sentiment = paste("not", sentiment))
+
+entities_neg_dis <- entities_neg %>% distinct(sentence_num)
+
+which(entities_sentiment$sentence_num == entities_neg_dis)
+
+entities_neg <- entities_neg %>% select(-author, -title, -words, -kind, -X, -word1, -word2) %>% mutate(sentiment2 = paste("not", sentiment))
+entities_neg <- rename(entities_neg, sentiment_neg = sentiment)
+
+bigrams_separated <- entities_bigram %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+not_words <- bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(nrc_pos, by = c(word2 = "word")) %>%
+  count(word2, sentiment, sort = TRUE)
+  
+
+entities_bigram %>% count(bigram, sort = TRUE)
+
+entities_sentiment_bi <- entities_unnest %>%
+  group_by(author, title) %>%
+  inner_join(get_sentiments("nrc"))
+```
+
+
 ```{r message=FALSE}
 #create sentiment table
 entities_sentiment <- entities_unnest %>%
   group_by(author, title) %>%
-  inner_join(get_sentiments("nrc")) %>%
-  count(sentence_num, sentiment) %>%
-  spread(sentiment, n, fill = 0) %>%
-  mutate(sentiment = positive - negative)
+  inner_join(get_sentiments("nrc"))
+entities_sentiment <- bind_rows(entities_sentiment, entities_neg) %>%
+count(sentence_num, sentiment) %>%
+  spread(sentiment, n, fill = 0)
+  entities_sentiment[ ,4] = 0 - entities_sentiment[ ,4]
+entities_sentiment[ ,6] = 0 - entities_sentiment[ ,6]
+entities_sentiment[ ,7] = 0 - entities_sentiment[ ,7]
+entities_sentiment[ ,10] = 0 - entities_sentiment[ ,10]
+entities_sentiment[ ,11] = 0 - entities_sentiment[ ,11]
+entities_sentiment[ ,18] = 0 - entities_sentiment[ ,18]
+entities_sentiment[ ,19] = 0 - entities_sentiment[ ,19]
+entities_sentiment[ ,21] = 0 - entities_sentiment[ ,21]
+  entities_sentiment <- entities_sentiment %>% select(-sentence_num) %>% mutate(sentiment = rowSums(across(where(is.numeric))))
+entities_sentiment <- entities_sentiment %>% select(title, author, sentiment)
 ```
 
 #### Combining sentiments with entitiees
@@ -358,7 +408,7 @@ vis_ner_1 <- ner_total_sentiment %>%
   mutate(words = reorder(words, total)) %>%
   ggplot(aes(words, y = total, fill = title, text = paste("Character: ", words, "\n", "% of positive emotion: ", total, sep = ""))) +
   geom_col()  +
-  facet_wrap(~ title, scales = "free", ncol = 2) +coord_flip() + labs(x = "Names of characters", 
+  facet_wrap(~ title, scales = "free") +coord_flip() + labs(x = "Names of characters", 
        y = "% of positive emotion", fill = "Novel", title = "% of Positive Emotions Detected")
 
 vis_ner_1_int <- ggplotly(vis_ner_1, tooltip = "text")
@@ -375,8 +425,8 @@ vis_ner_2 <- ner_total_sentiment %>%
   mutate(words = reorder(words, (desc(total)))) %>%
   ggplot(aes(words, x = total, fill = title, text = paste("Character: ", words, "\n", "% of negative emotion: ", 0 - total, sep = ""))) +
   geom_col() +
-  facet_wrap(~ title, scales = "free") + labs(x = "Names of characters", 
-       y = "% of negative emotion", fill = "Novel", title = "% of Negative Emotions Detected")
+  facet_wrap(~ title, scales = "free") + labs(x = "% of Negative Emotion", 
+       y = "Characters in Novels", fill = "Novel", title = "% of Negative Emotions Detected")
 vis_ner_2_int <- ggplotly(vis_ner_2, tooltip = "text")
 vis_ner_2_int
 
