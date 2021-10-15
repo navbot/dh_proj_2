@@ -162,14 +162,14 @@ fitzgerald_emotions <- tidy_fitzgerald %>% left_join(emotion_words)
 ```{r fitzgerald_emotion_table}
 #counting how often female words appeared
 #table shows each text and the respective percentage
-fitzgerald_emotion_calc <- fitzgerald_emotions %>% group_by(title) %>% count(emotion) %>% mutate(percent = n/sum(n)*100) %>% mutate(author = "F. Scott Fitzgerald")
+fitzgerald_emotion_calc <- fitzgerald_emotions %>% group_by(title) %>% count(emotion) %>% mutate(percent = round(n/sum(n)*100, 2)) %>% mutate(author = "F. Scott Fitzgerald")
 
 ```
 
 ```{r hemingway_emotion_table}
 #counting how often female words appeared
 #table shows each text and the respective percentage
-hemingway_emotion_calc <- hemingway_emotions %>% group_by(title) %>% count(emotion) %>% mutate(percent = n/sum(n)*100) %>% mutate(author = "Earnest Hemingway")
+hemingway_emotion_calc <- hemingway_emotions %>% group_by(title) %>% count(emotion) %>% mutate(percent = round(n/sum(n)*100, 2)) %>% mutate(author = "Earnest Hemingway")
 
 ```
 
