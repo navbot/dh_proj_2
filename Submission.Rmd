@@ -136,3 +136,7 @@ Another issue with our analysis was related to how we generated an overall emoti
 
 On a more granular level, having the ability to wrangle data in endless ways proved to be a huge advantage. Testing various ideas by restructuring data in creative ways was a swift process. We were able to generate a multitude of visualisations by making very minor changes in code, which sped up the ideation and the subsequent verification process. One glaring flaw, though, was the NER process. In joining entities with sentences, the code relied on partial matches, which led to entities being attached to wrong sentences. And manually combing through and cleaning the data was a tedious and very time consuming task. Perhaps a better way could be devised to computationally attach entities to the right sentences.
 
+### Appendix
+
+
+R^^2
